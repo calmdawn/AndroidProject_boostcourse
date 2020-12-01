@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--    MainActivity-->
+        <dimen name="margin_main_between_background">20dp</dimen>
+        <dimen name="padding_main_outside_layout">20dp</dimen>
+        <dimen name="height_main_poster_layout">240dp</dimen>
+
+
+        <!--영화포스터설명-->
+        <dimen name="textsize_main_poster_large">24sp</dimen>
+        <dimen name="textsize_main_poster_medium">20sp</dimen>
+        <dimen name="textsize_main_poster_small">16sp</dimen>
+
+        <!--예매율, 평점, 누적관객수-->
+
+        <dimen name="textsize_main_movie_rate_large">24sp</dimen>
+        <dimen name="textsize_main_movie_rate_medium">20sp</dimen>
+        <dimen name="textsize_main_movie_rate_small">16sp</dimen>
+
+        <!--    줄거리, 감독, 출연-->
+
+        <dimen name="textsize_main_contents_large">24sp</dimen>
+        <dimen name="textsize_main_contents_medium">20sp</dimen>
+        <dimen name="textsize_main_contents_small">16sp</dimen>
+
+
+        <!--    한줄평-->
+        <dimen name="textsize_reviewitems_large">14sp</dimen>
+        <dimen name="textsize_reviewitems_medium">12sp</dimen>
+        <dimen name="textsize_reviewitems_small">10sp</dimen>
+
+
+        <!--    기타-->
+        <dimen name="textsize_main_btn_large">24sp</dimen>
+        <dimen name="textsize_main_btn_medium">20sp</dimen>
+        <dimen name="textsize_main_btn_small">16sp</dimen>
+
+
+    <!--    WriteReviewActivity-->
+
+    <dimen name="margin_write_review_between_widget">8dp</dimen>
+    <dimen name="textsize_write_review_large">24sp</dimen>
+    <dimen name="textsize_write_review_medium">20sp</dimen>
+    <dimen name="textsize_write_review_small">16sp</dimen>
+
+
+
+</resources>
