@@ -1,9 +1,9 @@
 package com.example.boostcoursemoblieproject;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,6 +13,7 @@ public class WriteReviewActivity extends AppCompatActivity implements View.OnCli
 
     RatingBar scoreRatingBar;
     EditText commentEditText;
+    int requestCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +26,7 @@ public class WriteReviewActivity extends AppCompatActivity implements View.OnCli
         }
 
 
+        requestCode = getIntent().getIntExtra("requestCode", 0);
         scoreRatingBar = findViewById(R.id.activity_writereview_ratingbar);
         commentEditText = findViewById(R.id.activity_writereview_edittext);
         Button saveBtn = findViewById(R.id.activity_writereview_save_btn);
@@ -40,11 +42,19 @@ public class WriteReviewActivity extends AppCompatActivity implements View.OnCli
         int id = v.getId();
 
         if (id == R.id.activity_writereview_save_btn) {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.putExtra("starScore", scoreRatingBar.getRating());
-            intent.putExtra("comment", commentEditText.getText().toString());
-            setResult(101, intent);
-            finish();
+            if (requestCode == 1000) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("starScore", scoreRatingBar.getRating());
+                intent.putExtra("comment", commentEditText.getText().toString());
+                setResult(2001, intent);
+                finish();
+            } else if (requestCode == 3000) {
+                Intent intent = new Intent(getApplicationContext(), SeeAllReviewActivity.class);
+                intent.putExtra("starScore", scoreRatingBar.getRating());
+                intent.putExtra("comment", commentEditText.getText().toString());
+                setResult(2001, intent);
+                finish();
+            }
         } else if (id == R.id.activity_writereview_cancel_btn) {
             finish();
         }

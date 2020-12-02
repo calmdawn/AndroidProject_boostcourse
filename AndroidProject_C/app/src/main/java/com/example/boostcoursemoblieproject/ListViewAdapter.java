@@ -16,6 +16,10 @@ public class ListViewAdapter extends BaseAdapter {
         this.context = context;
     }
 
+    public ArrayList<Users> getReviewItems(){
+        return reviewItems;
+    }
+
     @Override
     public int getCount() {
         return reviewItems.size();

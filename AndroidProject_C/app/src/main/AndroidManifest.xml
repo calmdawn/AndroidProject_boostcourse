@@ -9,8 +9,8 @@
         android:roundIcon="@drawable/ic_app"
         android:supportsRtl="true"
         android:theme="@style/Theme.BoostcourseMoblieProject">
-
-        <activity android:name=".WriteReviewActivity"></activity>
+        <activity android:name=".SeeAllReviewActivity"></activity>
+        <activity android:name=".WriteReviewActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
