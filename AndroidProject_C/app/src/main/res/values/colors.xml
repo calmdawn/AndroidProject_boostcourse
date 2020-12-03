@@ -26,4 +26,9 @@
     <!--WriteReviewActivity-->
     <color name="edit_text_background">#FF9800</color>
 
+
+
+    <color name="custom_toast_background">#29AFAF</color>
+
+
 </resources>

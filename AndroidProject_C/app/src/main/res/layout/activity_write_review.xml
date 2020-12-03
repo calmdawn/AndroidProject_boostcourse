@@ -33,7 +33,7 @@
         android:layout_marginTop="@dimen/margin_write_review_between_widget"
         android:isIndicator="false"
         android:numStars="5"
-        android:stepSize="0.5"/>
+        android:stepSize="0.5" />
 
     <TextView
         android:layout_width="match_parent"
@@ -48,13 +48,13 @@
         android:id="@+id/activity_writereview_edittext"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="@dimen/margin_write_review_between_widget"
         android:layout_marginTop="@dimen/margin_write_review_between_widget"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="@dimen/margin_write_review_between_widget"
         android:background="@drawable/edittext_review_text_form"
         android:gravity="start"
-        android:padding="8dp"
         android:hint="@string/write_review_edittext_hint"
+        android:padding="8dp"
         android:textSize="@dimen/textsize_write_review_medium" />
 
 
@@ -62,37 +62,36 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_write_review_between_widget"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="@dimen/margin_write_review_between_widget"
+        android:layout_marginBottom="@dimen/margin_write_review_between_widget"
         android:gravity="end"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/activity_writereview_save_btn"
-            android:layout_marginTop="@dimen/margin_write_review_between_widget"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/write_review_btn_save"
+            android:layout_marginTop="@dimen/margin_write_review_between_widget"
             android:background="@drawable/button_view_border"
+            android:text="@string/write_review_btn_save"
             android:textSize="@dimen/textsize_write_review_medium" />
 
 
         <Button
             android:id="@+id/activity_writereview_cancel_btn"
-            android:layout_marginTop="@dimen/margin_write_review_between_widget"
-            android:layout_marginStart="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/write_review_btn_cancel"
+            android:layout_marginStart="@dimen/margin_write_review_between_widget"
+            android:layout_marginTop="@dimen/margin_write_review_between_widget"
             android:background="@drawable/button_view_border"
+            android:text="@string/write_review_btn_cancel"
             android:textSize="@dimen/textsize_write_review_medium" />
     </LinearLayout>
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/gray"/>
-
+        android:background="@color/gray" />
 
 
 </LinearLayout>

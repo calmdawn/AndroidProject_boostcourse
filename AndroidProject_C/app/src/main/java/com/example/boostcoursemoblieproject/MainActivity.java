@@ -30,11 +30,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ListView listView;
     ListViewAdapter adapter;
 
+    CustomToast customToast;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        customToast = new CustomToast(getApplicationContext());
 
         controlThumbUp = new ControlThumbUp();
         controlThumbDown = new ControlThumbDown();
@@ -85,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-
         if (requestCode == 1000) {
             if (resultCode == 2001) {                // received WriteReviewActivity data
                 float starScore = data.getFloatExtra("starScore", 0);
@@ -101,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void updateListViewData(Intent data) {
 
+        //기존의 한줄평 목록보다 클 경우에만 리스트뷰에 추가함
         ArrayList<Users> usersData = (ArrayList<Users>) data.getSerializableExtra("reviewItemsData");
         for (int i = adapter.getCount(); i < usersData.size(); i++) {
             adapter.addItem(usersData.get(i));
@@ -114,14 +117,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent;
         switch (id) {
             case R.id.activity_main_write_btn:
-                Toast.makeText(getApplicationContext(), "작성하기 버튼이 눌렸습니다", Toast.LENGTH_SHORT).show();
+                customToast.makeText(getResources().getString(R.string.main_toast_write), Toast.LENGTH_SHORT);
                 intent = new Intent(getApplicationContext(), WriteReviewActivity.class);
                 intent.putExtra("requestCode", 1000);
                 startActivityForResult(intent, 1000);
                 break;
 
             case R.id.activity_main_review_all_btn:
-                Toast.makeText(getApplicationContext(), "모두보기 버튼이 눌렸습니다", Toast.LENGTH_SHORT).show();
+                customToast.makeText(getResources().getString(R.string.main_toast_review_all), Toast.LENGTH_SHORT);
                 intent = new Intent(getApplicationContext(), SeeAllReviewActivity.class);
 
                 //한줄평 데이터들을 어댑터에서 가져온후 모두보기로 넘겨줌

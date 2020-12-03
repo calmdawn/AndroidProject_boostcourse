@@ -51,6 +51,9 @@
     <!-- 예매하기-->
     <string name="main_movie_reservation">예매하기</string>
 
+    <!--  main 토스트-->
+    <string name="main_toast_write">작성하기 버튼이 눌렸습니다.</string>
+    <string name="main_toast_review_all">모두보기 버튼이 눌렸습니다.</string>
 
     <!--    WriteReviewActivity-->
 
@@ -58,5 +61,11 @@
     <string name="write_review_edittext_hint">100자 이내로 작성해주세요.</string>
     <string name="write_review_btn_save">저 장</string>
     <string name="write_review_btn_cancel">취 소</string>
+    <string name="write_review_toast_success">작성하기 화면에서 돌아왔습니다.\n작성여부 : true</string>
+    <string name="write_review_toast_fail">작성하기 화면에서 돌아왔습니다.\n작성여부 : false</string>
+
+    <!--    SeeAllReviewActivity-->
+    <string name="see_all_review_toast_write">작성하기 버튼이 눌렸습니다.</string>
+    <string name="see_all_review_toast_back">모두보기 화면에서 돌아왔습니다.</string>
 
 </resources>

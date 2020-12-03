@@ -45,5 +45,10 @@
     <dimen name="textsize_write_review_small">16sp</dimen>
 
 
-
+    <!--    SeeAllReviewActivity-->
+    <dimen name="margin_see_all_review_between_layout">8dp</dimen>
+    <dimen name="padding_see_all_review_inside_layout">8dp</dimen>
+    <dimen name="textsize_see_all_review_large">24sp</dimen>
+    <dimen name="textsize_see_all_review_medium">20sp</dimen>
+    <dimen name="textsize_see_all_review_small">16sp</dimen>
 </resources>

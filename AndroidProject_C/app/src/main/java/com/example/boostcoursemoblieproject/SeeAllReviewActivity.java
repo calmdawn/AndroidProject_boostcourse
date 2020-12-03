@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -17,6 +18,7 @@ public class SeeAllReviewActivity extends AppCompatActivity implements View.OnCl
 
     ListView seeAllListView;
     ListViewAdapter seeAllAdapter;
+    CustomToast customToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +26,8 @@ public class SeeAllReviewActivity extends AppCompatActivity implements View.OnCl
         setContentView(R.layout.activity_see_all_review);
 
         setCustomActionBar();
+
+        customToast = new CustomToast(getApplicationContext());
 
         ImageButton backImgBtn = findViewById(R.id.activity_see_all_review_back_iv);
         Button writeBtn = findViewById(R.id.activity_see_all_review_write_btn);
@@ -50,6 +54,7 @@ public class SeeAllReviewActivity extends AppCompatActivity implements View.OnCl
         } else if (id == R.id.activity_see_all_review_write_btn) {
             intent = new Intent(getApplicationContext(), WriteReviewActivity.class);
             intent.putExtra("requestCode", 3000);
+            customToast.makeText(getResources().getString(R.string.see_all_review_toast_write), Toast.LENGTH_SHORT);
             startActivityForResult(intent, 3000);
         }
 
@@ -90,6 +95,7 @@ public class SeeAllReviewActivity extends AppCompatActivity implements View.OnCl
         ArrayList<Users> reviewItemsData = seeAllAdapter.getReviewItems();
         intent.putExtra("reviewItemsData", reviewItemsData);
         setResult(3001, intent);
+        customToast.makeText(getResources().getString(R.string.see_all_review_toast_back), Toast.LENGTH_SHORT);
         finish();
     }
 
