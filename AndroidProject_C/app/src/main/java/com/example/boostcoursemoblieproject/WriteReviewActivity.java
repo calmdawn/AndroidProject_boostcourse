@@ -19,6 +19,8 @@ public class WriteReviewActivity extends AppCompatActivity implements View.OnCli
 
     CustomToast customToast;
 
+    public static final int RESULT_CODE_OF_WRITE_REVIEW_ACTIVITY = 2001;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,18 +51,18 @@ public class WriteReviewActivity extends AppCompatActivity implements View.OnCli
 
         if (id == R.id.activity_writereview_save_btn) {
 
-            if (requestCode == 1000) {  //MainActivity에서 작성하기 버튼을 누른 경우
+            if (requestCode == MainActivity.REQUEST_CODE_OF_MAIN_ACTIVITY) {  //MainActivity에서 작성하기 버튼을 누른 경우
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.putExtra("starScore", scoreRatingBar.getRating());
                 intent.putExtra("comment", commentEditText.getText().toString());
-                setResult(2001, intent);
+                setResult(RESULT_CODE_OF_WRITE_REVIEW_ACTIVITY, intent);
                 customToast.makeText(getResources().getString(R.string.write_review_toast_success), Toast.LENGTH_SHORT);
                 finish();
-            } else if (requestCode == 3000) {  //SeeAllReviewActivity에서 작성하기 버튼을 누른 경우
+            } else if (requestCode == SeeAllReviewActivity.REQUEST_CODE_OF_SEE_ALL_REVIEW_ACTIVITY) {  //SeeAllReviewActivity에서 작성하기 버튼을 누른 경우
                 Intent intent = new Intent(getApplicationContext(), SeeAllReviewActivity.class);
                 intent.putExtra("starScore", scoreRatingBar.getRating());
                 intent.putExtra("comment", commentEditText.getText().toString());
-                setResult(2001, intent);
+                setResult(RESULT_CODE_OF_WRITE_REVIEW_ACTIVITY, intent);
                 customToast.makeText(getResources().getString(R.string.write_review_toast_success), Toast.LENGTH_SHORT);
                 finish();
             }

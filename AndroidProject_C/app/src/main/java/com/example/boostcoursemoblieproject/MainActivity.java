@@ -16,21 +16,23 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    TextView thumbUpTextView;
-    TextView thumbDownTextView;
-    ImageButton thumbUpImgBtn;
-    ImageButton thumbDownImgBtn;
-    int thumbState = 0;
 
-    ControlThumbUp controlThumbUp;
-    ControlThumbDown controlThumbDown;
 
-    ScrollView scrollView;
+    private ImageButton thumbUpImgBtn;
+    private ImageButton thumbDownImgBtn;
+    private int thumbState = 0;
 
-    ListView listView;
-    ListViewAdapter adapter;
+    private ControlThumbUp controlThumbUp;
+    private ControlThumbDown controlThumbDown;
 
-    CustomToast customToast;
+    private ScrollView scrollView;
+
+    private ListView listView;
+    private ListViewAdapter adapter;
+
+    private CustomToast customToast;
+
+    public static final int REQUEST_CODE_OF_MAIN_ACTIVITY = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +52,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         thumbUpImgBtn = findViewById(R.id.imagebtn_main_thumb_up);
         thumbDownImgBtn = findViewById(R.id.imagebtn_main_thumb_down);
 
-        thumbUpTextView = findViewById(R.id.textview_main_thumb_up);
-        thumbDownTextView = findViewById(R.id.textview_main_thumb_down);
 
         thumbUpImgBtn.setOnClickListener(thumbOnClickListener);
         thumbDownImgBtn.setOnClickListener(thumbOnClickListener);
@@ -88,13 +88,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 1000) {
-            if (resultCode == 2001) {                // received WriteReviewActivity data
+        if (requestCode == REQUEST_CODE_OF_MAIN_ACTIVITY) {
+            if (resultCode == WriteReviewActivity.RESULT_CODE_OF_WRITE_REVIEW_ACTIVITY) {                // received WriteReviewActivity data
                 float starScore = data.getFloatExtra("starScore", 0);
                 String comment = String.valueOf(data.getStringExtra("comment"));
                 adapter.addItem(new Users("sonic", comment, R.drawable.user1, starScore));
                 listView.setAdapter(adapter);
-            } else if (resultCode == 3001) {         // received SeeAllReviewActivity data
+            } else if (resultCode == SeeAllReviewActivity.RESULT_CODE_OF_SEE_ALL_REVIEW_ACTIVITY) {         // received SeeAllReviewActivity data
                 updateListViewData(data);
             }
         }
@@ -119,8 +119,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.activity_main_write_btn:
                 customToast.makeText(getResources().getString(R.string.main_toast_write), Toast.LENGTH_SHORT);
                 intent = new Intent(getApplicationContext(), WriteReviewActivity.class);
-                intent.putExtra("requestCode", 1000);
-                startActivityForResult(intent, 1000);
+                intent.putExtra("requestCode", REQUEST_CODE_OF_MAIN_ACTIVITY);
+                startActivityForResult(intent, REQUEST_CODE_OF_MAIN_ACTIVITY);
                 break;
 
             case R.id.activity_main_review_all_btn:
@@ -130,8 +130,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //한줄평 데이터들을 어댑터에서 가져온후 모두보기로 넘겨줌
                 ArrayList<Users> reviewItemsData = adapter.getReviewItems();
                 intent.putExtra("reviewItemsData", reviewItemsData);
-                intent.putExtra("requestCode", 1000);
-                startActivityForResult(intent, 1000);
+                intent.putExtra("requestCode", REQUEST_CODE_OF_MAIN_ACTIVITY);
+                startActivityForResult(intent, REQUEST_CODE_OF_MAIN_ACTIVITY);
                 break;
         }
     }
@@ -189,6 +189,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //좋아요 버튼 컨트롤
     private class ControlThumbUp implements IThumbControllable {
         int numThumbUp;
+        TextView thumbUpTextView = findViewById(R.id.textview_main_thumb_up);
 
         public ControlThumbUp() {
 
@@ -214,6 +215,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private class ControlThumbDown implements IThumbControllable {
 
         int numThumbDown;
+        TextView thumbDownTextView = findViewById(R.id.textview_main_thumb_down);
 
         public ControlThumbDown() {
 

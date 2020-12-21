@@ -23,19 +23,19 @@ public class CustomToast extends Toast {
         layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = layoutInflater.inflate(R.layout.layout_custom_toast, null);
         tv = view.findViewById(R.id.custom_toast_tv1);
+        setView(view);
     }
 
     public void makeText(String text, int duration) {
         tv.setText(text);
 
-        show(this, view, duration);
+        show(duration);
 
     }
 
-    private void show(CustomToast customToast, View view, int duration) {
-        customToast.setDuration(duration);
-        customToast.setView(view);
-        customToast.show();
+    private void show(int duration) {
+        setDuration(duration);
+        show();
     }
 
 

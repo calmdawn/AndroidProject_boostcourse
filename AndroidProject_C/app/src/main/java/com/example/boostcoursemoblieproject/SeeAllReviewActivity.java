@@ -20,6 +20,9 @@ public class SeeAllReviewActivity extends AppCompatActivity implements View.OnCl
     ListViewAdapter seeAllAdapter;
     CustomToast customToast;
 
+    public static final int REQUEST_CODE_OF_SEE_ALL_REVIEW_ACTIVITY = 3000;
+    public static final int RESULT_CODE_OF_SEE_ALL_REVIEW_ACTIVITY = 3001;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,9 +56,9 @@ public class SeeAllReviewActivity extends AppCompatActivity implements View.OnCl
 
         } else if (id == R.id.activity_see_all_review_write_btn) {
             intent = new Intent(getApplicationContext(), WriteReviewActivity.class);
-            intent.putExtra("requestCode", 3000);
+            intent.putExtra("requestCode", REQUEST_CODE_OF_SEE_ALL_REVIEW_ACTIVITY);
             customToast.makeText(getResources().getString(R.string.see_all_review_toast_write), Toast.LENGTH_SHORT);
-            startActivityForResult(intent, 3000);
+            startActivityForResult(intent, REQUEST_CODE_OF_SEE_ALL_REVIEW_ACTIVITY);
         }
 
     }
@@ -64,8 +67,8 @@ public class SeeAllReviewActivity extends AppCompatActivity implements View.OnCl
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 3000) {
-            if (resultCode == 2001) {                // received WriteReviewActivity data
+        if (requestCode == REQUEST_CODE_OF_SEE_ALL_REVIEW_ACTIVITY) {
+            if (resultCode == WriteReviewActivity.RESULT_CODE_OF_WRITE_REVIEW_ACTIVITY) {                // received WriteReviewActivity data
                 float starScore = data.getFloatExtra("starScore", 0);
                 String comment = String.valueOf(data.getStringExtra("comment"));
                 seeAllAdapter.addItem(new Users("sonic", comment, R.drawable.user1, starScore));
@@ -94,7 +97,7 @@ public class SeeAllReviewActivity extends AppCompatActivity implements View.OnCl
         //한줄평 데이터들을 어댑터에서 가져온후 모두보기로 넘겨줌
         ArrayList<Users> reviewItemsData = seeAllAdapter.getReviewItems();
         intent.putExtra("reviewItemsData", reviewItemsData);
-        setResult(3001, intent);
+        setResult(RESULT_CODE_OF_SEE_ALL_REVIEW_ACTIVITY, intent);
         customToast.makeText(getResources().getString(R.string.see_all_review_toast_back), Toast.LENGTH_SHORT);
         finish();
     }

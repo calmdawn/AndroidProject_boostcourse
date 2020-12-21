@@ -16,7 +16,7 @@ public class ListViewAdapter extends BaseAdapter {
         this.context = context;
     }
 
-    public ArrayList<Users> getReviewItems(){
+    public ArrayList<Users> getReviewItems() {
         return reviewItems;
     }
 
@@ -40,9 +40,13 @@ public class ListViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup viewGroup) {
-        ReviewItemsView reviewItemsView = new ReviewItemsView(context);
-
+    public View getView(int position, View convertView, ViewGroup viewGroup) {
+        ReviewItemsView reviewItemsView;
+        if (convertView == null) {
+            reviewItemsView = new ReviewItemsView(context);
+        } else {
+            reviewItemsView = (ReviewItemsView) convertView;
+        }
         Users item = reviewItems.get(position);
         reviewItemsView.setProfileImgView(item.imgRes);
         reviewItemsView.setScoreRatingBar(item.starScore);
