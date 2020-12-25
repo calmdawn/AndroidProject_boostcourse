@@ -51,7 +51,7 @@ public class WriteReviewActivity extends AppCompatActivity implements View.OnCli
 
         if (id == R.id.activity_writereview_save_btn) {
 
-            if (requestCode == MainActivity.REQUEST_CODE_OF_MAIN_ACTIVITY) {  //MainActivity에서 작성하기 버튼을 누른 경우
+            if (requestCode == MovieDetailInfoFragment.REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT) {  //MainActivity에서 작성하기 버튼을 누른 경우
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.putExtra("starScore", scoreRatingBar.getRating());
                 intent.putExtra("comment", commentEditText.getText().toString());

@@ -15,7 +15,7 @@
         android:drawableEnd="@drawable/ic_15"
         android:drawablePadding="8dp"
         android:gravity="center_vertical"
-        android:text="@string/main_poster_movie_name"
+        android:text="@string/movie_detail_info_poster_movie_name"
         android:textSize="@dimen/textsize_write_review_large" />
 
     <TextView

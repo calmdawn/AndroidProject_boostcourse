@@ -1,25 +1,27 @@
 <resources>
     <string name="app_name">씨네마천국</string>
 
-    <!--    MainActivity-->
+
+    <!--    MovieDetailInfoFragment-->
+
     <!-- 영화 포스터-->
-    <string name="main_poster_movie_name">군도</string>
-    <string name="main_poster_date">2014.07.23 개봉</string>
-    <string name="main_poster_type_time">액션 / 137 분</string>
+    <string name="movie_detail_info_poster_movie_name">군도</string>
+    <string name="movie_detail_info_poster_date">2014.07.23 개봉</string>
+    <string name="movie_detail_info_poster_type_time">액션 / 137 분</string>
 
 
     <!--예매율, 평점, 누적관객수-->
-    <string name="main_movie_reservation_rate_text">예매율</string>
-    <string name="main_movie_reservation_rate_num">5위 1.8%</string>
-    <string name="main_movie_rank_text">평점</string>
-    <string name="main_movie_rank_num">8.2</string>
-    <string name="main_movie_audience_text">누적관객수</string>
-    <string name="main_movie_audience_num">839,399명</string>
+    <string name="movie_detail_info_movie_reservation_rate_text">예매율</string>
+    <string name="movie_detail_info_movie_reservation_rate_num">5위 1.8%</string>
+    <string name="movie_detail_info_movie_rank_text">평점</string>
+    <string name="movie_detail_info_movie_rank_num">8.2</string>
+    <string name="movie_detail_info_movie_audience_text">누적관객수</string>
+    <string name="movie_detail_info_movie_audience_num">839,399명</string>
 
 
     <!--줄거리-->
-    <string name="main_movie_story_title">줄거리</string>
-    <string name="main_movie_story">
+    <string name="movie_detail_info_movie_story_title">줄거리</string>
+    <string name="movie_detail_info_movie_story">
          군도, 백성을 구하라!
          \n양반과 탐관오리들의 착취가 극에 달했던 조선 철종 13년.
          힘 없는 백성의 편이 되어 세상을 바로잡고자 하는 의적떼인 군도(群盜), 지리산 추설이 있었다.
@@ -30,30 +32,30 @@
          \n망할 세상을 뒤집기 위해, 백성이 주인인 새 세상을 향해 도치를 필두로 한 군도는 백성의 적, 조윤과 한 판 승부를 시작하는데…</string>
 
     <!--감독/출연 -->
-    <string name="main_movie_director_actor_title">감독/출연</string>
-    <string name="main_movie_director">감독</string>
-    <string name="main_movie_director_name">윤종빈</string>
-    <string name="main_movie_actor">출연</string>
-    <string name="main_movie_actor_name">하정우(도치), 강동원(조윤)</string>
+    <string name="movie_detail_info_movie_director_actor_title">감독/출연</string>
+    <string name="movie_detail_info_movie_director">감독</string>
+    <string name="movie_detail_info_movie_director_name">윤종빈</string>
+    <string name="movie_detail_info_movie_actor">출연</string>
+    <string name="movie_detail_info_movie_actor_name">하정우(도치), 강동원(조윤)</string>
 
 
     <!-- 한줄평-->
-    <string name="main_movie_review_title">한줄평</string>
-    <string name="main_movie_review_write">작성하기</string>
-    <string name="main_movie_review_all">모두 보기</string>
-    <string name="main_movie_review_username">사용자이름</string>
-    <string name="main_movie_review_usertime">7분전</string>
-    <string name="main_movie_review_usercomment">코멘트가 들어갈 공간입니다.</string>
-    <string name="main_movie_review_userrecommand">추천  0</string>
-    <string name="main_movie_review_userreport">신고하기</string>
+    <string name="movie_detail_info_movie_review_title">한줄평</string>
+    <string name="movie_detail_info_movie_review_write">작성하기</string>
+    <string name="movie_detail_info_movie_review_all">모두 보기</string>
+    <string name="movie_detail_info_movie_review_username">사용자이름</string>
+    <string name="movie_detail_info_movie_review_usertime">7분전</string>
+    <string name="movie_detail_info_movie_review_usercomment">코멘트가 들어갈 공간입니다.</string>
+    <string name="movie_detail_info_movie_review_userrecommand">추천  0</string>
+    <string name="movie_detail_info_movie_review_userreport">신고하기</string>
 
 
     <!-- 예매하기-->
-    <string name="main_movie_reservation">예매하기</string>
+    <string name="movie_detail_info_movie_reservation">예매하기</string>
 
-    <!--  main 토스트-->
-    <string name="main_toast_write">작성하기 버튼이 눌렸습니다.</string>
-    <string name="main_toast_review_all">모두보기 버튼이 눌렸습니다.</string>
+    <!--  movie_detail_info 토스트-->
+    <string name="movie_detail_info_toast_write">작성하기 버튼이 눌렸습니다.</string>
+    <string name="movie_detail_info_toast_review_all">모두보기 버튼이 눌렸습니다.</string>
 
     <!--    WriteReviewActivity-->
 
@@ -67,9 +69,6 @@
     <!--    SeeAllReviewActivity-->
     <string name="see_all_review_toast_write">작성하기 버튼이 눌렸습니다.</string>
     <string name="see_all_review_toast_back">모두보기 화면에서 돌아왔습니다.</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <!--    MovieListFragment-->
 
 </resources>

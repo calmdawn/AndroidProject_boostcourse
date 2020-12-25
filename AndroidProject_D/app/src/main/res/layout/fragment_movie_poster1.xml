@@ -50,6 +50,7 @@
             android:textSize="@dimen/textsize_movie_list_medium" />
 
         <Button
+            android:id="@+id/fragment_movie_poster1_btn"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"

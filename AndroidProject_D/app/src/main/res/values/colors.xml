@@ -16,7 +16,6 @@
     <color name="start_blue">#7288D8</color>
     <color name="center_blue">#3250B4</color>
     <color name="end_blue">#254095</color>
-
     <color name="background">#EAEAEA</color>
     <color name="orange">#FF4800</color>
     <color name="bright_purple">#AA2DBF</color>
@@ -26,8 +25,7 @@
     <!--WriteReviewActivity-->
     <color name="edit_text_background">#FF9800</color>
 
-
-
+    <!--    MovieDetailInfoFragment-->
     <color name="custom_toast_background">#29AFAF</color>
 
 

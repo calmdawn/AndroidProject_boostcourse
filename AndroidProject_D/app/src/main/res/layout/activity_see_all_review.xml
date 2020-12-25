@@ -23,7 +23,7 @@
             android:layout_marginStart="@dimen/margin_see_all_review_between_layout"
             android:background="@color/white"
             android:gravity="center_vertical"
-            android:text="@string/main_poster_movie_name"
+            android:text="@string/movie_detail_info_poster_movie_name"
             android:textSize="@dimen/textsize_write_review_large" />
 
         <ImageView
@@ -90,7 +90,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/main_movie_review_title"
+                android:text="@string/movie_detail_info_movie_review_title"
                 android:textColor="@color/black"
                 android:textSize="@dimen/textsize_see_all_review_medium"
                 android:textStyle="bold" />
@@ -103,7 +103,7 @@
                 android:background="@android:color/transparent"
                 android:drawableStart="@drawable/ic_review_selected"
                 android:drawablePadding="@dimen/padding_see_all_review_inside_layout"
-                android:text="@string/main_movie_review_write"
+                android:text="@string/movie_detail_info_movie_review_write"
                 android:textColor="@color/orange"
                 android:textSize="@dimen/textsize_see_all_review_medium"
                 android:textStyle="bold" />
