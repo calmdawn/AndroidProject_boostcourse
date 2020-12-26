@@ -16,9 +16,9 @@ import java.util.ArrayList;
 
 public class SeeAllReviewActivity extends AppCompatActivity implements View.OnClickListener {
 
-    ListView seeAllListView;
-    ListViewAdapter seeAllAdapter;
-    CustomToast customToast;
+    private ListView seeAllListView;
+    private ListViewAdapter seeAllAdapter;
+    private CustomToast customToast;
 
     public static final int REQUEST_CODE_OF_SEE_ALL_REVIEW_ACTIVITY = 3000;
     public static final int RESULT_CODE_OF_SEE_ALL_REVIEW_ACTIVITY = 3001;

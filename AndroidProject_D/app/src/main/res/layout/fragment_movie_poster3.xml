@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/main_background"
     android:orientation="vertical"
     android:weightSum="10"
     tools:context=".MoviePosterFragment1">
@@ -14,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_margin="@dimen/margin_movie_list_between_widget"
+        android:layout_margin="@dimen/margin_movie_detail_between_widget"
         android:src="@drawable/image3" />
 
     <LinearLayout
@@ -28,10 +27,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="@dimen/margin_movie_list_between_widget"
-            android:text="1. 군 도"
+            android:layout_margin="@dimen/margin_movie_detail_between_widget"
+            android:text="@string/movie_poster3_name"
             android:textColor="@color/white"
-            android:textSize="@dimen/textsize_movie_list_large" />
+            android:textSize="@dimen/textsize_movie_detail_large" />
 
         <ImageView
 
@@ -44,20 +43,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="@dimen/margin_movie_list_between_widget"
-            android:text="예매율 61.6% | 15세 관람가 | D-1"
+            android:layout_margin="@dimen/margin_movie_detail_between_widget"
+            android:text="@string/movie_poster3_info"
             android:textColor="@color/white"
-            android:textSize="@dimen/textsize_movie_list_medium" />
+            android:textSize="@dimen/textsize_movie_detail_medium" />
 
         <Button
             android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="@dimen/margin_movie_list_between_widget"
+            android:layout_margin="@dimen/margin_movie_detail_between_widget"
             android:background="@drawable/button_view_detail_form"
-            android:text="상세보기"
+            android:text="@string/movie_poster_view_btn"
             android:textColor="@color/white"
-            android:textSize="@dimen/textsize_movie_list_large" />
+            android:textSize="@dimen/textsize_movie_detail_large" />
 
     </LinearLayout>
 
