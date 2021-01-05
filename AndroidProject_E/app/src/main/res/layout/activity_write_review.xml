@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".WriteReviewActivity">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_write_review_between_widget"
+        android:background="@color/white"
+        android:drawableEnd="@drawable/ic_15"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:text="@string/movie_detail_info_poster_movie_name"
+        android:textSize="@dimen/textsize_write_review_large" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="@dimen/margin_write_review_between_widget"
+        android:background="@color/gray" />
+
+
+    <RatingBar
+        android:id="@+id/activity_writereview_ratingbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/margin_write_review_between_widget"
+        android:isIndicator="false"
+        android:numStars="5"
+        android:stepSize="0.5" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_write_review_between_widget"
+        android:gravity="center"
+        android:text="@string/write_review_input_rate_score"
+        android:textSize="@dimen/textsize_write_review_medium" />
+
+
+    <EditText
+        android:id="@+id/activity_writereview_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginStart="@dimen/margin_write_review_between_widget"
+        android:layout_marginTop="@dimen/margin_write_review_between_widget"
+        android:layout_marginEnd="@dimen/margin_write_review_between_widget"
+        android:background="@drawable/edittext_review_text_form"
+        android:gravity="start"
+        android:hint="@string/write_review_edittext_hint"
+        android:padding="8dp"
+        android:textSize="@dimen/textsize_write_review_medium" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_write_review_between_widget"
+        android:layout_marginEnd="@dimen/margin_write_review_between_widget"
+        android:layout_marginBottom="@dimen/margin_write_review_between_widget"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/activity_writereview_save_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_write_review_between_widget"
+            android:background="@drawable/button_view_border"
+            android:text="@string/write_review_btn_save"
+            android:textSize="@dimen/textsize_write_review_medium" />
+
+
+        <Button
+            android:id="@+id/activity_writereview_cancel_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_write_review_between_widget"
+            android:layout_marginTop="@dimen/margin_write_review_between_widget"
+            android:background="@drawable/button_view_border"
+            android:text="@string/write_review_btn_cancel"
+            android:textSize="@dimen/textsize_write_review_medium" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/gray" />
+
+
+</LinearLayout>
