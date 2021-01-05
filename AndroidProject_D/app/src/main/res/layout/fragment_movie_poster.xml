@@ -5,30 +5,32 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="10"
-    tools:context=".MoviePosterFragment1">
+    tools:context=".MoviePosterFragment">
 
 
     <ImageView
+        android:id="@+id/fragment_movie_poster_iv"
+        android:layout_weight="6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_margin="@dimen/margin_movie_detail_between_widget"
-        android:layout_weight="6"
-        android:src="@drawable/image5" />
+        android:src="@drawable/image1" />
 
     <LinearLayout
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        
         android:layout_weight="4"
-        android:orientation="vertical">
+        android:layout_width="wrap_content"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
 
         <TextView
+            android:id="@+id/fragment_movie_poster_name_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="@dimen/margin_movie_detail_between_widget"
-            android:text="@string/movie_poster5_name"
+            android:text="@string/movie_poster1_name"
             android:textColor="@color/white"
             android:textSize="@dimen/textsize_movie_detail_large" />
 
@@ -40,15 +42,17 @@
             android:src="@drawable/home_slider1" />
 
         <TextView
+            android:id="@+id/fragment_movie_poster_info_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="@dimen/margin_movie_detail_between_widget"
-            android:text="@string/movie_poster5_info"
+            android:text="@string/movie_poster1_info"
             android:textColor="@color/white"
             android:textSize="@dimen/textsize_movie_detail_medium" />
 
         <Button
+            android:id="@+id/fragment_movie_poster1_btn"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"

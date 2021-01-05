@@ -22,24 +22,17 @@
     <!--    MoviePosterContainerFragment-->
     <string name="movie_poster_view_btn">상세 보기</string>
 
-    <!--    MoviePosterFragment1-->
+    <!--    MoviePosterFragment-->
     <string name="movie_poster1_name">1. 군 도</string>
-    <string name="movie_poster1_info">예매율 61.6% | 15세 관람가 | D-1</string>
-
-    <!--    MoviePosterFragment2-->
     <string name="movie_poster2_name">2. 공 조</string>
-    <string name="movie_poster2_info">예매율 61.6% | 15세 관람가 | D-1</string>
-
-    <!--    MoviePosterFragment3-->
     <string name="movie_poster3_name">3. 더 킹</string>
-    <string name="movie_poster3_info">예매율 11.2% | 12세 관람가</string>
-
-    <!--    MoviePosterFragment4-->
     <string name="movie_poster4_name">4. 레지던트 이블</string>
-    <string name="movie_poster4_info">예매율 21.6% | 15세 관람가 | D-2</string>
-
-    <!--    MoviePosterFragment5-->
     <string name="movie_poster5_name">5. 럭 키</string>
+
+    <string name="movie_poster1_info">예매율 61.6% | 15세 관람가 | D-1</string>
+    <string name="movie_poster2_info">예매율 61.6% | 15세 관람가 | D-1</string>
+    <string name="movie_poster3_info">예매율 11.2% | 12세 관람가</string>
+    <string name="movie_poster4_info">예매율 21.6% | 15세 관람가 | D-2</string>
     <string name="movie_poster5_info">예매율 21.7% | 12세 관람가 | D-3</string>
 
 
@@ -112,6 +105,8 @@
     <!--    SeeAllReviewActivity-->
     <string name="see_all_review_toast_write">작성하기 버튼이 눌렸습니다.</string>
     <string name="see_all_review_toast_back">모두보기 화면에서 돌아왔습니다.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

@@ -89,6 +89,9 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
         return rootView;
     }
 
+
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

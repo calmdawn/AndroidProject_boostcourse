@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="large_poster_imgs">
+        <item>@drawable/image1</item>
+        <item>@drawable/image2</item>
+        <item>@drawable/image3</item>
+        <item>@drawable/image4</item>
+        <item>@drawable/image5</item>
+    </array>
+
+    <string-array name="large_poster_names">
+        <item>@string/movie_poster1_name</item>
+        <item>@string/movie_poster2_name</item>
+        <item>@string/movie_poster3_name</item>
+        <item>@string/movie_poster4_name</item>
+        <item>@string/movie_poster5_name</item>
+    </string-array>
+
+    <string-array name="large_poster_infos">
+        <item>@string/movie_poster1_info</item>
+        <item>@string/movie_poster2_info</item>
+        <item>@string/movie_poster3_info</item>
+        <item>@string/movie_poster4_info</item>
+        <item>@string/movie_poster5_info</item>
+    </string-array>
+
+</resources>
