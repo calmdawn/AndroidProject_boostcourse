@@ -17,16 +17,16 @@ import com.bumptech.glide.Glide;
 public class MoviePosterFragment extends Fragment {
 
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM_POSTER_IMG = "param1";
-    private static final String ARG_PARAM_POSTER_NAME = "param2";
-    private static final String ARG_PARAM_POSTER_INFO = "param3";
+    private static final String ARG_PARAM_POSTER_IMG = "paramImg";
+    private static final String ARG_PARAM_POSTER_NAME = "paramName";
+    private static final String ARG_PARAM_POSTER_INFO = "paramInfo";
+    private static final String ARG_PARAM_POSTER_MOVIE_ID = "paramMovieId";
 
-    // TODO: Rename and change types of parameters
+
     private String mImgParam;
     private String mPosterNameParam;
     private String mPosterInfoParam;
+    private int mMovieIdParam;
 
     public ChangeFragmentCallBack changeFragmentCallBack;
 
@@ -35,19 +35,20 @@ public class MoviePosterFragment extends Fragment {
     }
 
 
-    public static MoviePosterFragment newInstance(String drawableResId, String largePosterName, String largePosterInfo) {
+    public static MoviePosterFragment newInstance(String drawableResId, String largePosterName, String largePosterInfo, int movieId) {
         MoviePosterFragment moviePosterFragment = new MoviePosterFragment();
 
         Bundle args = new Bundle();
         args.putString(ARG_PARAM_POSTER_IMG, drawableResId);
         args.putString(ARG_PARAM_POSTER_NAME, largePosterName);
         args.putString(ARG_PARAM_POSTER_INFO, largePosterInfo);
+        args.putInt(ARG_PARAM_POSTER_MOVIE_ID, movieId);
         moviePosterFragment.setArguments(args);
         return moviePosterFragment;
     }
 
     public interface ChangeFragmentCallBack{
-        public void fragmentChange();
+        public void fragmentChange(int mMovieIdParam);
     }
 
 
@@ -68,6 +69,7 @@ public class MoviePosterFragment extends Fragment {
             mImgParam = getArguments().getString(ARG_PARAM_POSTER_IMG);
             mPosterNameParam = getArguments().getString(ARG_PARAM_POSTER_NAME);
             mPosterInfoParam = getArguments().getString(ARG_PARAM_POSTER_INFO);
+            mMovieIdParam = getArguments().getInt(ARG_PARAM_POSTER_MOVIE_ID);
         }
     }
 
@@ -89,7 +91,7 @@ public class MoviePosterFragment extends Fragment {
         testBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeFragmentCallBack.fragmentChange();
+                changeFragmentCallBack.fragmentChange(mMovieIdParam);
             }
         });
 

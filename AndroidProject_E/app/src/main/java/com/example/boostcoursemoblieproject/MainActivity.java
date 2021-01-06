@@ -40,8 +40,7 @@ public class MainActivity extends AppCompatActivity implements MoviePosterFragme
         moviePosterContainerFragment = new MoviePosterContainerFragment();
 
         fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().add(R.id.activity_main_nav_host_fragment, moviePosterContainerFragment, "MoviePosterContainer").commit();
-        fragmentTag = "MoviePosterContainer";
+        fragmentManager.beginTransaction().replace(R.id.activity_main_nav_host_fragment, moviePosterContainerFragment, "MoviePosterContainerFragment").commit();
 
         //NavigationDrawer 생성
         toolbar = findViewById(R.id.toolbar);
@@ -63,13 +62,11 @@ public class MainActivity extends AppCompatActivity implements MoviePosterFragme
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.nav_movie_list:
-                        if (movieDetailInfoFragment != null) {
-                            fragmentManager.beginTransaction().show(moviePosterContainerFragment).commit();
-                            fragmentManager.beginTransaction().hide(movieDetailInfoFragment).commit();
-                            fragmentTag = "MoviePosterContainer";
-                        }
+
+                        fragmentManager.beginTransaction().replace(R.id.activity_main_nav_host_fragment, moviePosterContainerFragment, "MoviePosterContainerFragment").commit();
                         toolbar.setTitle(getResources().getString(R.string.menu_movie_list));
                         break;
+
                     default:
                         break;
                 }
@@ -89,13 +86,12 @@ public class MainActivity extends AppCompatActivity implements MoviePosterFragme
 
     @Override
     public void onBackPressed() {
+        String fragmentTag = fragmentManager.findFragmentById(R.id.activity_main_nav_host_fragment).getTag();
 
-        if (fragmentTag.equals("MoviePosterContainer")) {
+        if (fragmentTag.equals("MoviePosterContainerFragment")) {
             finish();
         } else if (fragmentTag.equals("MovieDetailInfoFragment")) {
-            fragmentManager.beginTransaction().show(moviePosterContainerFragment).commit();
-            fragmentManager.beginTransaction().hide(movieDetailInfoFragment).commit();
-            fragmentTag = "MoviePosterContainer";
+            fragmentManager.beginTransaction().replace(R.id.activity_main_nav_host_fragment, moviePosterContainerFragment, "MoviePosterContainerFragment").commit();
         }
 
     }
@@ -109,16 +105,10 @@ public class MainActivity extends AppCompatActivity implements MoviePosterFragme
 
 
     @Override
-    public void fragmentChange() {
-        if (movieDetailInfoFragment == null) {
-            movieDetailInfoFragment = new MovieDetailInfoFragment();
-            fragmentManager.beginTransaction().add(R.id.activity_main_nav_host_fragment, movieDetailInfoFragment, "MovieDetailInfoFragment").commit();
-        } else {
-            fragmentManager.beginTransaction().show(movieDetailInfoFragment).commit();
-            fragmentManager.beginTransaction().hide(moviePosterContainerFragment).commit();
+    public void fragmentChange(int mMovieIdParam) {
 
-        }
-        fragmentTag = "MovieDetailInfoFragment";
+        movieDetailInfoFragment = MovieDetailInfoFragment.newInstance(mMovieIdParam);
+        fragmentManager.beginTransaction().replace(R.id.activity_main_nav_host_fragment, movieDetailInfoFragment, "MovieDetailInfoFragment").commit();
 
         toolbar.setTitle((getResources().getString(R.string.movie_detail_info_poster_title)));
     }

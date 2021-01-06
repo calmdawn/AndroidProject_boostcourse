@@ -41,7 +41,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="20dp"
-                    android:paddingTop="40dp">
+                    android:paddingTop="20dp">
 
                     <TextView
                         android:id="@+id/fragment_movie_detail_movie_name_tv"
@@ -189,6 +189,7 @@
                         android:orientation="horizontal">
 
                         <RatingBar
+                            android:id="@+id/fragment_movie_detail_user_ratingbar"
                             style="@style/Widget.AppCompat.RatingBar.Small"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -196,7 +197,7 @@
                             android:max="10"
                             android:numStars="5"
                             android:progressTint="#FF2DA1"
-                            android:rating="4.5"
+                            android:rating="1"
                             android:stepSize="0.5" />
 
                         <TextView

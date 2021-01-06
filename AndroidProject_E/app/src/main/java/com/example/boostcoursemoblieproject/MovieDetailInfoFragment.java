@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,7 +29,12 @@ import java.util.ArrayList;
 
 public class MovieDetailInfoFragment extends Fragment implements View.OnClickListener {
 
+    public static final String ARG_PARAM_INFO_DETAIL_MOVIE_ID = "paramMovieId";
+
     public static final int REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT = 1000;
+    public static final int MAX_COMMENT_LIST_DETAIL_INFO_FRAGMENT = 3;
+
+    private int mMovieIdParam;
 
     private ImageButton thumbUpImgBtn;
     private ImageButton thumbDownImgBtn;
@@ -47,27 +53,47 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
     private Movie movie;
     private CommentList commentList;
 
-    int MovieRequestCode = 100;
-    int CommentListRequestCode = 200;
+    int MovieRequestCode = 201;
+    int CommentListRequestCode = 202;
 
-    ImageView detailPosterIv;
-    TextView detailMovieNameTv;
-    TextView detailMovieDateTv;
-    TextView detailMovieCategoryTv;
-    TextView thumbUpTextView;
-    TextView thumbDownTextView;
+    private ImageView detailPosterIv;
+    private TextView detailMovieNameTv;
+    private TextView detailMovieDateTv;
+    private TextView detailMovieCategoryTv;
+    private TextView thumbUpTextView;
+    private TextView thumbDownTextView;
 
-    TextView detailMovieReservationTv;
-    TextView detailMovieUserRateTv;
-    TextView detailMovieAudienceTv;
+    private TextView detailMovieReservationTv;
+    private TextView detailMovieUserRateTv;
+    private TextView detailMovieAudienceTv;
 
-    TextView detailMovieSynopsisTv;
-    TextView detailMovieDirectorTv;
-    TextView detailMovieActorTv;
+    private TextView detailMovieSynopsisTv;
+    private TextView detailMovieDirectorTv;
+    private TextView detailMovieActorTv;
+
+    private RatingBar detailMovieUserRatingbar;
+
+    public MovieDetailInfoFragment() {
+
+    }
+
+    public static MovieDetailInfoFragment newInstance(int movieId) {
+        MovieDetailInfoFragment movieDetailInfoFragment = new MovieDetailInfoFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_PARAM_INFO_DETAIL_MOVIE_ID, movieId);
+        movieDetailInfoFragment.setArguments(args);
+        return movieDetailInfoFragment;
+    }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            mMovieIdParam = getArguments().getInt(ARG_PARAM_INFO_DETAIL_MOVIE_ID);
+        }
+
         requestMovie();
         requestCommentList();
     }
@@ -98,6 +124,8 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
         detailMovieDirectorTv = (TextView) rootView.findViewById(R.id.fragment_movie_detail_director_name_tv);
         detailMovieActorTv = (TextView) rootView.findViewById(R.id.fragment_movie_detail_actor_name_tv);
 
+        detailMovieUserRatingbar = (RatingBar) rootView.findViewById(R.id.fragment_movie_detail_user_ratingbar);
+
         // 좋아요, 싫어요 부분
         controlThumbUp = new ControlThumbUp();
         controlThumbDown = new ControlThumbDown();
@@ -124,11 +152,6 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
         listView = (ListView) rootView.findViewById(R.id.fragment_movie_detail_listview);
         adapter = new ListViewAdapter(getActivity());
 
-//        adapter.addItem(new Users("kym71", "적당히 재밌다. 오랜만에 잠 안오는 영화 봤네요.", R.drawable.user1, (float) 3.0));
-//        adapter.addItem(new Users("shen", "훌륭한 영화의 표본입니다", R.drawable.user1, (float) 5.0));
-//        adapter.addItem(new Users("robert", "배우들의 연기가 일품", R.drawable.user1, (float) 5.0));
-//        adapter.addItem(new Users("james99", "무엇을 보여주려 하는지 알 수 없는 영화", R.drawable.user1, (float) 1.0));
-//        listView.setAdapter(adapter);
 
         //스크롤 뷰안에 리스트뷰가 중첩되어 스크롤 되지 않음을 해결
         listView.setOnTouchListener(new View.OnTouchListener() {
@@ -144,7 +167,7 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
 
     private void requestMovie() {
         String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovie";
-        url += "?" + "id=1";
+        url += "?" + "id=" + mMovieIdParam;
 
 
         StringRequest request = new StringRequest(
@@ -154,7 +177,6 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
                     @Override
                     public void onResponse(String response) {
                         processResponseConvertGson(response, MovieRequestCode);
-                        Toast.makeText(getActivity(), movie.result.get(0).title, Toast.LENGTH_SHORT).show();
                         setMovieDetailInfo();
                     }
                 },
@@ -172,7 +194,7 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
 
     private void requestCommentList() {
         String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readCommentList";
-        url += "?" + "id=1";
+        url += "?" + "id=" + mMovieIdParam;
 
 
         StringRequest request = new StringRequest(
@@ -182,8 +204,9 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
                     @Override
                     public void onResponse(String response) {
                         processResponseConvertGson(response, CommentListRequestCode);
-                        Toast.makeText(getActivity(), commentList.result.get(0).contents, Toast.LENGTH_SHORT).show();
                         setListViewCommentList();
+                        //화면전환시 포커스를 맨위로 이동
+                        scrollView.fullScroll(ScrollView.FOCUS_UP);
                     }
                 },
                 new Response.ErrorListener() {
@@ -198,10 +221,11 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
         AppHelper.requestQueue.add(request);
     }
 
+    //MAX_COMMENT_LIST_DETAIL_INFO_FRAGMENT에 설정한 한줄평 최대값만큼만을 보여줌
     private void setListViewCommentList() {
-        adapter.addItem(new Users(commentList.result.get(0).writer, commentList.result.get(0).contents, R.drawable.user1, commentList.result.get(0).rating));
-        adapter.addItem(new Users(commentList.result.get(1).writer, commentList.result.get(1).contents, R.drawable.user1, commentList.result.get(1).rating));
-        adapter.addItem(new Users(commentList.result.get(2).writer, commentList.result.get(2).contents, R.drawable.user1, commentList.result.get(2).rating));
+        for (int i = 0; i < MAX_COMMENT_LIST_DETAIL_INFO_FRAGMENT; i++) {
+            adapter.addItem(new Users(commentList.result.get(i).writer, commentList.result.get(i).contents, R.drawable.user1, commentList.result.get(i).rating));
+        }
         listView.setAdapter(adapter);
 
     }
@@ -230,6 +254,7 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
 
         detailMovieReservationTv.setText(movie.result.get(0).reservation_grade + "위" + " " + movie.result.get(0).reservation_rate + "%");
         detailMovieUserRateTv.setText(String.valueOf(movie.result.get(0).user_rating));
+        detailMovieUserRatingbar.setRating(movie.result.get(0).user_rating);
         detailMovieAudienceTv.setText(movie.result.get(0).audience + "명");
 
         detailMovieSynopsisTv.setText(movie.result.get(0).synopsis);
@@ -244,10 +269,7 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
 
         if (requestCode == REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT) {
             if (resultCode == WriteReviewActivity.RESULT_CODE_OF_WRITE_REVIEW_ACTIVITY) {                // received WriteReviewActivity data
-                float starScore = data.getFloatExtra("starScore", 0);
-                String comment = String.valueOf(data.getStringExtra("comment"));
-                adapter.addItem(new Users("sonic", comment, R.drawable.user1, starScore));
-                listView.setAdapter(adapter);
+
             } else if (resultCode == SeeAllReviewActivity.RESULT_CODE_OF_SEE_ALL_REVIEW_ACTIVITY) {         // received SeeAllReviewActivity data
                 updateListViewData(data);
             }
@@ -257,12 +279,12 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
 
     private void updateListViewData(Intent data) {
 
-        //기존의 한줄평 목록보다 클 경우에만 리스트뷰에 추가함
-        ArrayList<Users> usersData = (ArrayList<Users>) data.getSerializableExtra("reviewItemsData");
-        for (int i = adapter.getCount(); i < usersData.size(); i++) {
-            adapter.addItem(usersData.get(i));
-        }
-        listView.setAdapter(adapter);
+        //기존의 한줄평 목록보다 클 경우에만 리스트뷰에 추가함  -> 가장최근 3가지것만 보여주도록 변경해야함
+//        ArrayList<Users> usersData = (ArrayList<Users>) data.getSerializableExtra("reviewItemsData");
+//        for (int i = adapter.getCount(); i < usersData.size(); i++) {
+//            adapter.addItem(usersData.get(i));
+//        }
+//        listView.setAdapter(adapter);
     }
 
     @Override
@@ -274,14 +296,18 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
                 customToast.makeText(getResources().getString(R.string.movie_detail_info_toast_write), Toast.LENGTH_SHORT);
                 intent = new Intent(getActivity(), WriteReviewActivity.class);
                 intent.putExtra("requestCode", REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT);
+                intent.putExtra(ARG_PARAM_INFO_DETAIL_MOVIE_ID, mMovieIdParam);
                 startActivityForResult(intent, REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT);
                 break;
 
             case R.id.fragment_movie_detail_review_all_btn:
                 customToast.makeText(getResources().getString(R.string.movie_detail_info_toast_review_all), Toast.LENGTH_SHORT);
                 intent = new Intent(getActivity(), SeeAllReviewActivity.class);
-
-                //한줄평 데이터들을 어댑터에서 가져온후 모두보기로 넘겨줌
+                intent.putExtra(ARG_PARAM_INFO_DETAIL_MOVIE_ID, mMovieIdParam);
+                //모든 한줄평 데이터들을 어댑터에서 추가 및 가져온후 모두보기로 넘겨줌
+                for (int i = MAX_COMMENT_LIST_DETAIL_INFO_FRAGMENT; i < commentList.result.size(); i++) {
+                    adapter.addItem(new Users(commentList.result.get(i).writer, commentList.result.get(i).contents, R.drawable.user1, commentList.result.get(i).rating));
+                }
                 ArrayList<Users> reviewItemsData = adapter.getReviewItems();
                 intent.putExtra("reviewItemsData", reviewItemsData);
                 intent.putExtra("requestCode", REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT);

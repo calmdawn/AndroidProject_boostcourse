@@ -68,8 +68,8 @@ public class MoviePosterContainerFragment extends Fragment {
             String drawableResId = movieList.result.get(i).image;
             String PosterName = movieList.result.get(i).title;
             String posterInfo = "예매율 " + movieList.result.get(i).reservation_rate + "% | " + movieList.result.get(i).grade + "세 관람가";
-
-            moviePosterFragments[i] = MoviePosterFragment.newInstance(drawableResId, PosterName, posterInfo);
+            int movieId = i + 1;
+            moviePosterFragments[i] = MoviePosterFragment.newInstance(drawableResId, PosterName, posterInfo, movieId);
             moviePosterPagerAdapter.addItem(moviePosterFragments[i]);
         }
         viewPager.setAdapter(moviePosterPagerAdapter);

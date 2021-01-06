@@ -23,6 +23,8 @@ public class SeeAllReviewActivity extends AppCompatActivity implements View.OnCl
     public static final int REQUEST_CODE_OF_SEE_ALL_REVIEW_ACTIVITY = 3000;
     public static final int RESULT_CODE_OF_SEE_ALL_REVIEW_ACTIVITY = 3001;
 
+    private int movieId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +45,9 @@ public class SeeAllReviewActivity extends AppCompatActivity implements View.OnCl
 
         backImgBtn.setOnClickListener(this);
         writeBtn.setOnClickListener(this);
+
+        Intent intent = getIntent();
+        movieId = intent.getIntExtra(MovieDetailInfoFragment.ARG_PARAM_INFO_DETAIL_MOVIE_ID, 0);
     }
 
 
@@ -57,6 +62,7 @@ public class SeeAllReviewActivity extends AppCompatActivity implements View.OnCl
         } else if (id == R.id.activity_see_all_review_write_btn) {
             intent = new Intent(getApplicationContext(), WriteReviewActivity.class);
             intent.putExtra("requestCode", REQUEST_CODE_OF_SEE_ALL_REVIEW_ACTIVITY);
+            intent.putExtra(MovieDetailInfoFragment.ARG_PARAM_INFO_DETAIL_MOVIE_ID, movieId);
             customToast.makeText(getResources().getString(R.string.see_all_review_toast_write), Toast.LENGTH_SHORT);
             startActivityForResult(intent, REQUEST_CODE_OF_SEE_ALL_REVIEW_ACTIVITY);
         }
@@ -69,10 +75,9 @@ public class SeeAllReviewActivity extends AppCompatActivity implements View.OnCl
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_OF_SEE_ALL_REVIEW_ACTIVITY) {
             if (resultCode == WriteReviewActivity.RESULT_CODE_OF_WRITE_REVIEW_ACTIVITY) {                // received WriteReviewActivity data
-                float starScore = data.getFloatExtra("starScore", 0);
-                String comment = String.valueOf(data.getStringExtra("comment"));
-                seeAllAdapter.addItem(new Users("sonic", comment, R.drawable.user1, starScore));
-                seeAllListView.setAdapter(seeAllAdapter);
+
+
+
             }
         }
     }
@@ -95,7 +100,10 @@ public class SeeAllReviewActivity extends AppCompatActivity implements View.OnCl
 
     private void backPressEvent(Intent intent) {
         //한줄평 데이터들을 어댑터에서 가져온후 모두보기로 넘겨줌
-        ArrayList<Users> reviewItemsData = seeAllAdapter.getReviewItems();
+        ArrayList<Users> reviewItemsData = new ArrayList<Users>();
+
+//        reviewItemsData.add((Users)seeAllAdapter.getItem(0));
+
         intent.putExtra("reviewItemsData", reviewItemsData);
         setResult(RESULT_CODE_OF_SEE_ALL_REVIEW_ACTIVITY, intent);
         customToast.makeText(getResources().getString(R.string.see_all_review_toast_back), Toast.LENGTH_SHORT);
