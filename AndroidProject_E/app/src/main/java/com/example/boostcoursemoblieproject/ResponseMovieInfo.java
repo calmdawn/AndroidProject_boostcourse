@@ -1,6 +1,6 @@
 package com.example.boostcoursemoblieproject;
 
-public class ResponseInfo {
+public class ResponseMovieInfo {
 
     public String message;
     public int code;

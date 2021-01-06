@@ -10,19 +10,19 @@
 
     <ImageView
         android:id="@+id/fragment_movie_poster_iv"
-        android:layout_weight="6"
+        android:layout_weight="7"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_gravity="center_horizontal"
         android:layout_margin="@dimen/margin_movie_detail_between_widget"
         android:src="@drawable/image1" />
 
     <LinearLayout
         
-        android:layout_weight="4"
+        android:layout_weight="3"
         android:layout_width="wrap_content"
         android:orientation="vertical"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp">
 
         <TextView
             android:id="@+id/fragment_movie_poster_name_tv"

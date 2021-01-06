@@ -27,16 +27,18 @@
                 android:background="@drawable/thumbnail_base"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal"
+                android:weightSum="10"
                 android:padding="@dimen/padding_movie_detail_info_outside_layout">
 
                 <ImageView
+                    android:layout_weight="4"
                     android:id="@+id/fragment_movie_detail_poster_iv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/image11" />
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
 
                 <RelativeLayout
-                    android:layout_width="match_parent"
+                    android:layout_weight="6"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="20dp"
                     android:paddingTop="40dp">
@@ -45,7 +47,7 @@
                         android:id="@+id/fragment_movie_detail_movie_name_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/movie_detail_info_poster_movie_name"
+                        android:hint="@string/movie_detail_info_poster_movie_name"
                         android:textColor="@color/white"
                         android:textSize="@dimen/textsize_movie_detail_info_poster_large"
                         android:textStyle="bold" />
@@ -63,7 +65,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/fragment_movie_detail_movie_name_tv"
                         android:layout_marginTop="20dp"
-                        android:text="@string/movie_detail_info_poster_date"
+                        android:hint="@string/movie_detail_info_poster_date"
                         android:textColor="@color/white"
                         android:textSize="@dimen/textsize_movie_detail_info_poster_medium" />
 
@@ -72,7 +74,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/fragment_movie_detail_date_tv"
-                        android:text="@string/movie_detail_info_poster_type_time"
+                        android:hint="@string/movie_detail_info_poster_type_time"
                         android:textColor="@color/white"
                         android:textSize="@dimen/textsize_movie_detail_info_poster_medium" />
 
@@ -96,7 +98,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="5dp"
                             android:gravity="center"
-                            android:text="15"
+                            android:hint="15"
                             android:textColor="@color/white"
                             android:textSize="@dimen/textsize_movie_detail_info_poster_medium"
                             android:textStyle="bold" />
@@ -116,7 +118,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="5dp"
                             android:gravity="center"
-                            android:text="1"
+                            android:hint="1"
                             android:textColor="@color/white"
                             android:textSize="@dimen/textsize_movie_detail_info_poster_medium"
                             android:textStyle="bold" />
@@ -153,6 +155,7 @@
                         android:textSize="@dimen/textsize_movie_detail_info_movie_rate_medium" />
 
                     <TextView
+                        android:id="@+id/fragment_movie_detail_reservation_tv"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
@@ -197,6 +200,7 @@
                             android:stepSize="0.5" />
 
                         <TextView
+                            android:id="@+id/fragment_movie_detail_user_rate_tv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
@@ -224,6 +228,7 @@
                         android:textSize="@dimen/textsize_movie_detail_info_movie_rate_medium" />
 
                     <TextView
+                        android:id="@+id/fragment_movie_detail_audience_tv"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
@@ -255,11 +260,12 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/fragment_movie_detail_synopsis_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:lineSpacingExtra="2dp"
-                    android:text="@string/movie_detail_info_movie_story"
+                    android:hint="@string/movie_detail_info_movie_story"
                     android:textSize="@dimen/textsize_movie_detail_info_contents_small" />
 
             </LinearLayout>
@@ -292,6 +298,7 @@
                     android:textSize="@dimen/textsize_movie_detail_info_contents_small" />
 
                 <TextView
+                    android:id="@+id/fragment_movie_detail_director_name_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/fragment_movie_detail_director_actor_tv"
@@ -312,6 +319,7 @@
                     android:textSize="@dimen/textsize_movie_detail_info_contents_small" />
 
                 <TextView
+                    android:id="@+id/fragment_movie_detail_actor_name_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/fragment_movie_detail_director_tv"

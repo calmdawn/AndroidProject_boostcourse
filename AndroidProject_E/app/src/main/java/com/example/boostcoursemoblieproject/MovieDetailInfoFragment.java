@@ -10,10 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -36,6 +44,34 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
 
     private CustomToast customToast;
 
+    private Movie movie;
+    private CommentList commentList;
+
+    int MovieRequestCode = 100;
+    int CommentListRequestCode = 200;
+
+    ImageView detailPosterIv;
+    TextView detailMovieNameTv;
+    TextView detailMovieDateTv;
+    TextView detailMovieCategoryTv;
+    TextView thumbUpTextView;
+    TextView thumbDownTextView;
+
+    TextView detailMovieReservationTv;
+    TextView detailMovieUserRateTv;
+    TextView detailMovieAudienceTv;
+
+    TextView detailMovieSynopsisTv;
+    TextView detailMovieDirectorTv;
+    TextView detailMovieActorTv;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestMovie();
+        requestCommentList();
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,20 +83,38 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
 
         customToast = new CustomToast(getActivity());
 
-        controlThumbUp = new ControlThumbUp(rootView);
-        controlThumbDown = new ControlThumbDown(rootView);
+        detailPosterIv = (ImageView) rootView.findViewById(R.id.fragment_movie_detail_poster_iv);
+        detailMovieNameTv = (TextView) rootView.findViewById(R.id.fragment_movie_detail_movie_name_tv);
+        detailMovieDateTv = (TextView) rootView.findViewById(R.id.fragment_movie_detail_date_tv);
+        detailMovieCategoryTv = (TextView) rootView.findViewById(R.id.fragment_movie_detail_category_tv);
+        thumbUpTextView = (TextView) rootView.findViewById(R.id.fragment_movie_detail_thumb_up_tv);
+        thumbDownTextView = (TextView) rootView.findViewById(R.id.fragment_movie_detail_thumb_down_tv);
 
-        scrollView = (ScrollView) rootView.findViewById(R.id.fragment_movie_detail_scrollview);
+        detailMovieReservationTv = (TextView) rootView.findViewById(R.id.fragment_movie_detail_reservation_tv);
+        detailMovieUserRateTv = (TextView) rootView.findViewById(R.id.fragment_movie_detail_user_rate_tv);
+        detailMovieAudienceTv = (TextView) rootView.findViewById(R.id.fragment_movie_detail_audience_tv);
 
-        Button writeBtn = (Button) rootView.findViewById(R.id.fragment_movie_detail_write_btn);
-        Button reviewAllBtn = (Button) rootView.findViewById(R.id.fragment_movie_detail_review_all_btn);
+        detailMovieSynopsisTv = (TextView) rootView.findViewById(R.id.fragment_movie_detail_synopsis_tv);
+        detailMovieDirectorTv = (TextView) rootView.findViewById(R.id.fragment_movie_detail_director_name_tv);
+        detailMovieActorTv = (TextView) rootView.findViewById(R.id.fragment_movie_detail_actor_name_tv);
+
+        // 좋아요, 싫어요 부분
+        controlThumbUp = new ControlThumbUp();
+        controlThumbDown = new ControlThumbDown();
 
         thumbUpImgBtn = (ImageButton) rootView.findViewById(R.id.fragment_movie_detail_thumb_up_imgbtn);
         thumbDownImgBtn = (ImageButton) rootView.findViewById(R.id.fragment_movie_detail_thumb_down_imgbtn);
 
-
         thumbUpImgBtn.setOnClickListener(thumbOnClickListener);
         thumbDownImgBtn.setOnClickListener(thumbOnClickListener);
+
+
+        scrollView = (ScrollView) rootView.findViewById(R.id.fragment_movie_detail_scrollview);
+
+        // 한줄평 부분
+        Button writeBtn = (Button) rootView.findViewById(R.id.fragment_movie_detail_write_btn);
+        Button reviewAllBtn = (Button) rootView.findViewById(R.id.fragment_movie_detail_review_all_btn);
+
 
         writeBtn.setOnClickListener(this);
         reviewAllBtn.setOnClickListener(this);
@@ -70,12 +124,11 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
         listView = (ListView) rootView.findViewById(R.id.fragment_movie_detail_listview);
         adapter = new ListViewAdapter(getActivity());
 
-        adapter.addItem(new Users("kym71", "적당히 재밌다. 오랜만에 잠 안오는 영화 봤네요.", R.drawable.user1, (float) 3.0));
-        adapter.addItem(new Users("shen", "훌륭한 영화의 표본입니다", R.drawable.user1, (float) 5.0));
-        adapter.addItem(new Users("robert", "배우들의 연기가 일품", R.drawable.user1, (float) 5.0));
-        adapter.addItem(new Users("james99", "무엇을 보여주려 하는지 알 수 없는 영화", R.drawable.user1, (float) 1.0));
-
-        listView.setAdapter(adapter);
+//        adapter.addItem(new Users("kym71", "적당히 재밌다. 오랜만에 잠 안오는 영화 봤네요.", R.drawable.user1, (float) 3.0));
+//        adapter.addItem(new Users("shen", "훌륭한 영화의 표본입니다", R.drawable.user1, (float) 5.0));
+//        adapter.addItem(new Users("robert", "배우들의 연기가 일품", R.drawable.user1, (float) 5.0));
+//        adapter.addItem(new Users("james99", "무엇을 보여주려 하는지 알 수 없는 영화", R.drawable.user1, (float) 1.0));
+//        listView.setAdapter(adapter);
 
         //스크롤 뷰안에 리스트뷰가 중첩되어 스크롤 되지 않음을 해결
         listView.setOnTouchListener(new View.OnTouchListener() {
@@ -89,7 +142,100 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
         return rootView;
     }
 
+    private void requestMovie() {
+        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovie";
+        url += "?" + "id=1";
 
+
+        StringRequest request = new StringRequest(
+                Request.Method.GET,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        processResponseConvertGson(response, MovieRequestCode);
+                        Toast.makeText(getActivity(), movie.result.get(0).title, Toast.LENGTH_SHORT).show();
+                        setMovieDetailInfo();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getActivity(), "응답에러" + error, Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        request.setShouldCache(false);
+        AppHelper.requestQueue.add(request);
+    }
+
+    private void requestCommentList() {
+        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readCommentList";
+        url += "?" + "id=1";
+
+
+        StringRequest request = new StringRequest(
+                Request.Method.GET,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        processResponseConvertGson(response, CommentListRequestCode);
+                        Toast.makeText(getActivity(), commentList.result.get(0).contents, Toast.LENGTH_SHORT).show();
+                        setListViewCommentList();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getActivity(), "응답에러" + error, Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        request.setShouldCache(false);
+        AppHelper.requestQueue.add(request);
+    }
+
+    private void setListViewCommentList() {
+        adapter.addItem(new Users(commentList.result.get(0).writer, commentList.result.get(0).contents, R.drawable.user1, commentList.result.get(0).rating));
+        adapter.addItem(new Users(commentList.result.get(1).writer, commentList.result.get(1).contents, R.drawable.user1, commentList.result.get(1).rating));
+        adapter.addItem(new Users(commentList.result.get(2).writer, commentList.result.get(2).contents, R.drawable.user1, commentList.result.get(2).rating));
+        listView.setAdapter(adapter);
+
+    }
+
+    public void processResponseConvertGson(String response, int requestCode) {
+        Gson gson = new Gson();
+        ResponseMovieInfo responseMovieInfo = gson.fromJson(response, ResponseMovieInfo.class);
+
+        if (responseMovieInfo.code == 200) {
+            if (requestCode == MovieRequestCode) {
+                movie = gson.fromJson(response, Movie.class);
+            } else if (requestCode == CommentListRequestCode) {
+                commentList = gson.fromJson(response, CommentList.class);
+            }
+        }
+
+    }
+
+    private void setMovieDetailInfo() {
+        Glide.with(getActivity()).load(movie.result.get(0).image).into(detailPosterIv);
+        detailMovieNameTv.setText(movie.result.get(0).title);
+        detailMovieDateTv.setText(movie.result.get(0).date + " 개봉");
+        detailMovieCategoryTv.setText(movie.result.get(0).genre + " / " + movie.result.get(0).duration + "분");
+        thumbUpTextView.setText(String.valueOf(movie.result.get(0).like));
+        thumbDownTextView.setText(String.valueOf(movie.result.get(0).dislike));
+
+        detailMovieReservationTv.setText(movie.result.get(0).reservation_grade + "위" + " " + movie.result.get(0).reservation_rate + "%");
+        detailMovieUserRateTv.setText(String.valueOf(movie.result.get(0).user_rating));
+        detailMovieAudienceTv.setText(movie.result.get(0).audience + "명");
+
+        detailMovieSynopsisTv.setText(movie.result.get(0).synopsis);
+        detailMovieDirectorTv.setText(movie.result.get(0).director);
+        detailMovieActorTv.setText(movie.result.get(0).actor);
+    }
 
 
     @Override
@@ -198,12 +344,10 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
     //좋아요 버튼 컨트롤
     private class ControlThumbUp implements IThumbControllable {
         int numThumbUp;
-        ViewGroup view;
-        TextView thumbUpTextView;
 
-        public ControlThumbUp(ViewGroup rootView) {
-            this.view = rootView;
-            this.thumbUpTextView = (TextView) view.findViewById(R.id.fragment_movie_detail_thumb_up_tv);
+
+        public ControlThumbUp() {
+
         }
 
         @Override
@@ -226,12 +370,10 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
     private class ControlThumbDown implements IThumbControllable {
 
         int numThumbDown;
-        ViewGroup view;
-        TextView thumbDownTextView;
 
-        public ControlThumbDown(ViewGroup rootView) {
-            this.view = rootView;
-            this.thumbDownTextView = (TextView) view.findViewById(R.id.fragment_movie_detail_thumb_down_tv);
+
+        public ControlThumbDown() {
+
         }
 
         @Override

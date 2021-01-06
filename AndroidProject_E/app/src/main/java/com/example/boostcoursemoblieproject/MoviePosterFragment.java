@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 
 public class MoviePosterFragment extends Fragment {
 
@@ -22,9 +24,9 @@ public class MoviePosterFragment extends Fragment {
     private static final String ARG_PARAM_POSTER_INFO = "param3";
 
     // TODO: Rename and change types of parameters
-    private int mParam1;
-    private String mParam2;
-    private String mParam3;
+    private String mImgParam;
+    private String mPosterNameParam;
+    private String mPosterInfoParam;
 
     public ChangeFragmentCallBack changeFragmentCallBack;
 
@@ -33,15 +35,15 @@ public class MoviePosterFragment extends Fragment {
     }
 
 
-    public static MoviePosterFragment newInstance(int drawableResId, String largePosterName, String largePosterInfo) {
-        MoviePosterFragment fragment1 = new MoviePosterFragment();
+    public static MoviePosterFragment newInstance(String drawableResId, String largePosterName, String largePosterInfo) {
+        MoviePosterFragment moviePosterFragment = new MoviePosterFragment();
 
         Bundle args = new Bundle();
-        args.putInt(ARG_PARAM_POSTER_IMG, drawableResId);
+        args.putString(ARG_PARAM_POSTER_IMG, drawableResId);
         args.putString(ARG_PARAM_POSTER_NAME, largePosterName);
         args.putString(ARG_PARAM_POSTER_INFO, largePosterInfo);
-        fragment1.setArguments(args);
-        return fragment1;
+        moviePosterFragment.setArguments(args);
+        return moviePosterFragment;
     }
 
     public interface ChangeFragmentCallBack{
@@ -63,9 +65,9 @@ public class MoviePosterFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getInt(ARG_PARAM_POSTER_IMG);
-            mParam2 = getArguments().getString(ARG_PARAM_POSTER_NAME);
-            mParam3 = getArguments().getString(ARG_PARAM_POSTER_INFO);
+            mImgParam = getArguments().getString(ARG_PARAM_POSTER_IMG);
+            mPosterNameParam = getArguments().getString(ARG_PARAM_POSTER_NAME);
+            mPosterInfoParam = getArguments().getString(ARG_PARAM_POSTER_INFO);
         }
     }
 
@@ -75,13 +77,13 @@ public class MoviePosterFragment extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_movie_poster, container, false);
 
         ImageView posterIv = rootView.findViewById(R.id.fragment_movie_poster_iv);
-        posterIv.setImageResource(mParam1);
+        Glide.with(getActivity()).load(mImgParam).into(posterIv);
 
         TextView posterNameTv = rootView.findViewById(R.id.fragment_movie_poster_name_tv);
-        posterNameTv.setText(mParam2);
+        posterNameTv.setText(mPosterNameParam);
 
         TextView posterInfoTv = rootView.findViewById(R.id.fragment_movie_poster_info_tv);
-        posterInfoTv.setText(mParam3);
+        posterInfoTv.setText(mPosterInfoParam);
 
         Button testBtn = (Button) rootView.findViewById(R.id.fragment_movie_poster1_btn);
         testBtn.setOnClickListener(new View.OnClickListener() {
