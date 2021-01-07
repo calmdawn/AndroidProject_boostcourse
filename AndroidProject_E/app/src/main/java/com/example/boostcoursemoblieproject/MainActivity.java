@@ -21,15 +21,12 @@ public class MainActivity extends AppCompatActivity implements MoviePosterFragme
     private AppBarConfiguration mAppBarConfiguration;
 
     private MoviePosterContainerFragment moviePosterContainerFragment;
-    private MovieDetailInfoFragment movieDetailInfoFragment;
 
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private FragmentManager fragmentManager;
 
     private Toolbar toolbar;
-
-    private String fragmentTag;
 
 
     @Override
@@ -76,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements MoviePosterFragme
             }
         });
 
+
         //RequestQueue 생성
         if (AppHelper.requestQueue == null) {
             AppHelper.requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -86,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements MoviePosterFragme
 
     @Override
     public void onBackPressed() {
+        //현재 뷰의 프래그먼트에 적용된 태그값에 따라 뒤로가기 버튼 동작 구현
         String fragmentTag = fragmentManager.findFragmentById(R.id.activity_main_nav_host_fragment).getTag();
 
         if (fragmentTag.equals("MoviePosterContainerFragment")) {
@@ -107,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements MoviePosterFragme
     @Override
     public void fragmentChange(int mMovieIdParam) {
 
-        movieDetailInfoFragment = MovieDetailInfoFragment.newInstance(mMovieIdParam);
+        MovieDetailInfoFragment movieDetailInfoFragment = MovieDetailInfoFragment.newInstance(mMovieIdParam);
         fragmentManager.beginTransaction().replace(R.id.activity_main_nav_host_fragment, movieDetailInfoFragment, "MovieDetailInfoFragment").commit();
 
         toolbar.setTitle((getResources().getString(R.string.movie_detail_info_poster_title)));

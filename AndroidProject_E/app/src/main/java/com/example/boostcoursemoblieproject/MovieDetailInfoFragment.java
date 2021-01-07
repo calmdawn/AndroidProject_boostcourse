@@ -24,15 +24,15 @@ import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
-
 
 public class MovieDetailInfoFragment extends Fragment implements View.OnClickListener {
 
-    public static final String ARG_PARAM_INFO_DETAIL_MOVIE_ID = "paramMovieId";
+    public static final String FRAGMENT_INFO_DETAIL_MOVIE_NAME = "detailMovieName";
+    public static final String FRAGMENT_INFO_DETAIL_MOVIE_ID = "detailMovieId";
+    public static final String FRAGMENT_INFO_DETAIL_MOVIE_RATE = "detailMovieRate";
 
-    public static final int REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT = 1000;
     public static final int MAX_COMMENT_LIST_DETAIL_INFO_FRAGMENT = 3;
+    public static final int REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT = 1000;
 
     private int mMovieIdParam;
 
@@ -53,9 +53,6 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
     private Movie movie;
     private CommentList commentList;
 
-    int MovieRequestCode = 201;
-    int CommentListRequestCode = 202;
-
     private ImageView detailPosterIv;
     private TextView detailMovieNameTv;
     private TextView detailMovieDateTv;
@@ -73,6 +70,9 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
 
     private RatingBar detailMovieUserRatingbar;
 
+    private int MovieRequestCode = 201;
+    private int CommentListRequestCode = 202;
+
     public MovieDetailInfoFragment() {
 
     }
@@ -80,7 +80,7 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
     public static MovieDetailInfoFragment newInstance(int movieId) {
         MovieDetailInfoFragment movieDetailInfoFragment = new MovieDetailInfoFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_PARAM_INFO_DETAIL_MOVIE_ID, movieId);
+        args.putInt(FRAGMENT_INFO_DETAIL_MOVIE_ID, movieId);
         movieDetailInfoFragment.setArguments(args);
         return movieDetailInfoFragment;
     }
@@ -91,7 +91,7 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mMovieIdParam = getArguments().getInt(ARG_PARAM_INFO_DETAIL_MOVIE_ID);
+            mMovieIdParam = getArguments().getInt(FRAGMENT_INFO_DETAIL_MOVIE_ID);
         }
 
         requestMovie();
@@ -143,7 +143,6 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
         Button writeBtn = (Button) rootView.findViewById(R.id.fragment_movie_detail_write_btn);
         Button reviewAllBtn = (Button) rootView.findViewById(R.id.fragment_movie_detail_review_all_btn);
 
-
         writeBtn.setOnClickListener(this);
         reviewAllBtn.setOnClickListener(this);
 
@@ -194,8 +193,7 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
 
     private void requestCommentList() {
         String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readCommentList";
-        url += "?" + "id=" + mMovieIdParam;
-
+        url += "?" + "id=" + mMovieIdParam + "&" + "limit=" + MAX_COMMENT_LIST_DETAIL_INFO_FRAGMENT;
 
         StringRequest request = new StringRequest(
                 Request.Method.GET,
@@ -223,8 +221,8 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
 
     //MAX_COMMENT_LIST_DETAIL_INFO_FRAGMENT에 설정한 한줄평 최대값만큼만을 보여줌
     private void setListViewCommentList() {
-        for (int i = 0; i < MAX_COMMENT_LIST_DETAIL_INFO_FRAGMENT; i++) {
-            adapter.addItem(new Users(commentList.result.get(i).writer, commentList.result.get(i).contents, R.drawable.user1, commentList.result.get(i).rating));
+        for (int i = 0; i < commentList.result.size(); i++) {
+            adapter.addItem(new Users(commentList.result.get(i).writer, commentList.result.get(i).time, commentList.result.get(i).contents, R.drawable.user1, commentList.result.get(i).rating));
         }
         listView.setAdapter(adapter);
 
@@ -262,31 +260,6 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
         detailMovieActorTv.setText(movie.result.get(0).actor);
     }
 
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT) {
-            if (resultCode == WriteReviewActivity.RESULT_CODE_OF_WRITE_REVIEW_ACTIVITY) {                // received WriteReviewActivity data
-
-            } else if (resultCode == SeeAllReviewActivity.RESULT_CODE_OF_SEE_ALL_REVIEW_ACTIVITY) {         // received SeeAllReviewActivity data
-                updateListViewData(data);
-            }
-        }
-
-    }
-
-    private void updateListViewData(Intent data) {
-
-        //기존의 한줄평 목록보다 클 경우에만 리스트뷰에 추가함  -> 가장최근 3가지것만 보여주도록 변경해야함
-//        ArrayList<Users> usersData = (ArrayList<Users>) data.getSerializableExtra("reviewItemsData");
-//        for (int i = adapter.getCount(); i < usersData.size(); i++) {
-//            adapter.addItem(usersData.get(i));
-//        }
-//        listView.setAdapter(adapter);
-    }
-
     @Override
     public void onClick(View v) {
         int id = v.getId();
@@ -296,24 +269,42 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
                 customToast.makeText(getResources().getString(R.string.movie_detail_info_toast_write), Toast.LENGTH_SHORT);
                 intent = new Intent(getActivity(), WriteReviewActivity.class);
                 intent.putExtra("requestCode", REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT);
-                intent.putExtra(ARG_PARAM_INFO_DETAIL_MOVIE_ID, mMovieIdParam);
+                //영화 이름, 영화 아이디를 넘겨줌
+                intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_NAME, movie.result.get(0).title);
+                intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_ID, mMovieIdParam);
                 startActivityForResult(intent, REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT);
                 break;
 
             case R.id.fragment_movie_detail_review_all_btn:
                 customToast.makeText(getResources().getString(R.string.movie_detail_info_toast_review_all), Toast.LENGTH_SHORT);
                 intent = new Intent(getActivity(), SeeAllReviewActivity.class);
-                intent.putExtra(ARG_PARAM_INFO_DETAIL_MOVIE_ID, mMovieIdParam);
-                //모든 한줄평 데이터들을 어댑터에서 추가 및 가져온후 모두보기로 넘겨줌
-                for (int i = MAX_COMMENT_LIST_DETAIL_INFO_FRAGMENT; i < commentList.result.size(); i++) {
-                    adapter.addItem(new Users(commentList.result.get(i).writer, commentList.result.get(i).contents, R.drawable.user1, commentList.result.get(i).rating));
-                }
-                ArrayList<Users> reviewItemsData = adapter.getReviewItems();
-                intent.putExtra("reviewItemsData", reviewItemsData);
-                intent.putExtra("requestCode", REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT);
+                //영화 이름, 아이디, 별점을 넘겨줌
+                intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_NAME, movie.result.get(0).title);
+                intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_ID, mMovieIdParam);
+                intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_RATE, movie.result.get(0).user_rating);
+
                 startActivityForResult(intent, REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT);
                 break;
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //한줄평 작성, 모두보기 화면에서 돌아올 경우 한줄평 리스트 업데이트
+
+        if (requestCode == REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT) {
+            if (resultCode == WriteReviewActivity.RESULT_CODE_OF_WRITE_REVIEW_ACTIVITY) {
+                adapter.reviewItems.clear();
+                requestCommentList();
+            } else if (resultCode == SeeAllReviewActivity.RESULT_CODE_OF_SEE_ALL_REVIEW_ACTIVITY) {
+                adapter.reviewItems.clear();
+                requestCommentList();
+            }
+        }
+
+
     }
 
     protected View.OnClickListener thumbOnClickListener = new View.OnClickListener() {

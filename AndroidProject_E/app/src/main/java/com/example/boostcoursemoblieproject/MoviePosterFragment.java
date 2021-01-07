@@ -34,7 +34,7 @@ public class MoviePosterFragment extends Fragment {
 
     }
 
-
+    //생성자가 아닌 newInstance로 값을 전달
     public static MoviePosterFragment newInstance(String drawableResId, String largePosterName, String largePosterInfo, int movieId) {
         MoviePosterFragment moviePosterFragment = new MoviePosterFragment();
 
@@ -47,7 +47,7 @@ public class MoviePosterFragment extends Fragment {
         return moviePosterFragment;
     }
 
-    public interface ChangeFragmentCallBack{
+    public interface ChangeFragmentCallBack {
         public void fragmentChange(int mMovieIdParam);
     }
 
@@ -56,8 +56,8 @@ public class MoviePosterFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if(context instanceof ChangeFragmentCallBack){
-            changeFragmentCallBack = (ChangeFragmentCallBack)context;
+        if (context instanceof ChangeFragmentCallBack) {
+            changeFragmentCallBack = (ChangeFragmentCallBack) context;
         }
 
     }

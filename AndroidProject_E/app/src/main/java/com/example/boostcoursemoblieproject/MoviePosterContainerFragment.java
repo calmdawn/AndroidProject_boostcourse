@@ -46,8 +46,6 @@ public class MoviePosterContainerFragment extends Fragment {
         Point size = new Point();
         display.getRealSize(size);
         int padding = (size.x) / 9;
-        //int padding = (int) (40 * getResources().getDisplayMetrics().density);   dp를 px로 변환
-
 
         //  영화 목록 + 뷰페이저
         viewPager = rootView.findViewById(R.id.fragment_movie_poster_container_viewpager);
@@ -104,7 +102,6 @@ public class MoviePosterContainerFragment extends Fragment {
 
     public void processResponseConvertGson(String response) {
         Gson gson = new Gson();
-
         ResponseMovieInfo responseMovieInfo = gson.fromJson(response, ResponseMovieInfo.class);
 
         if (responseMovieInfo.code == 200) {

@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -22,13 +23,15 @@ import java.util.Map;
 public class WriteReviewActivity extends AppCompatActivity implements View.OnClickListener {
 
 
+    public static final int RESULT_CODE_OF_WRITE_REVIEW_ACTIVITY = 2001;
+
     RatingBar scoreRatingBar;
     EditText commentEditText;
     int requestCode;
 
     CustomToast customToast;
 
-    public static final int RESULT_CODE_OF_WRITE_REVIEW_ACTIVITY = 2001;
+    private String movieName;
     private int movieId;
 
     @Override
@@ -42,6 +45,12 @@ public class WriteReviewActivity extends AppCompatActivity implements View.OnCli
         }
 
         requestCode = getIntent().getIntExtra("requestCode", 0);
+        movieName = getIntent().getStringExtra(MovieDetailInfoFragment.FRAGMENT_INFO_DETAIL_MOVIE_NAME);
+        movieId = getIntent().getIntExtra(MovieDetailInfoFragment.FRAGMENT_INFO_DETAIL_MOVIE_ID, 0);
+
+        TextView titleMovieNameTv = findViewById(R.id.activity_writereview_title_tv);
+        titleMovieNameTv.setText(movieName);
+
         scoreRatingBar = findViewById(R.id.activity_writereview_ratingbar);
         commentEditText = findViewById(R.id.activity_writereview_edittext);
         Button saveBtn = findViewById(R.id.activity_writereview_save_btn);
@@ -96,18 +105,20 @@ public class WriteReviewActivity extends AppCompatActivity implements View.OnCli
 
         if (id == R.id.activity_writereview_save_btn) {
 
-            if (requestCode == MovieDetailInfoFragment.REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT) {  //MainActivity에서 작성하기 버튼을 누른 경우
-                customToast.makeText(getResources().getString(R.string.write_review_toast_success), Toast.LENGTH_SHORT);
+            if (requestCode == MovieDetailInfoFragment.REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT) {  //MainActivity의 MovieDetailInfoFragment에서 작성하기 버튼을 누른 경우
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                setResult(RESULT_CODE_OF_WRITE_REVIEW_ACTIVITY, intent);
 
             } else if (requestCode == SeeAllReviewActivity.REQUEST_CODE_OF_SEE_ALL_REVIEW_ACTIVITY) {  //SeeAllReviewActivity에서 작성하기 버튼을 누른 경우
-                customToast.makeText(getResources().getString(R.string.write_review_toast_success), Toast.LENGTH_SHORT);
+                Intent intent = new Intent(getApplicationContext(), SeeAllReviewActivity.class);
+                setResult(RESULT_CODE_OF_WRITE_REVIEW_ACTIVITY, intent);
 
             }
 
-            Intent intent = getIntent();
-            movieId = intent.getIntExtra(MovieDetailInfoFragment.ARG_PARAM_INFO_DETAIL_MOVIE_ID, 0);
             postRequestCreateComment();
+            customToast.makeText(getResources().getString(R.string.write_review_toast_success), Toast.LENGTH_SHORT);
             finish();
+
 
         } else if (id == R.id.activity_writereview_cancel_btn) {
             customToast.makeText(getResources().getString(R.string.write_review_toast_fail), Toast.LENGTH_SHORT);

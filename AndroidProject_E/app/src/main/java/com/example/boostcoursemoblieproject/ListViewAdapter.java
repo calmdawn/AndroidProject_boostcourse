@@ -49,6 +49,7 @@ public class ListViewAdapter extends BaseAdapter {
         }
         Users item = reviewItems.get(position);
         reviewItemsView.setProfileImgView(item.imgRes);
+        reviewItemsView.setDateTextView(item.date);
         reviewItemsView.setScoreRatingBar(item.starScore);
         reviewItemsView.setNameTextView(item.name);
         reviewItemsView.setCommentTextView(item.comment);

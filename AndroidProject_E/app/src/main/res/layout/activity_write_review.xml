@@ -8,14 +8,16 @@
 
 
     <TextView
+        android:id="@+id/activity_writereview_title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_write_review_between_widget"
+        android:layout_marginStart="@dimen/margin_write_review_between_widget"
         android:background="@color/white"
         android:drawableEnd="@drawable/ic_15"
         android:drawablePadding="8dp"
         android:gravity="center_vertical"
-        android:text="@string/movie_detail_info_poster_movie_name"
+        android:hint="@string/movie_detail_info_poster_movie_name"
         android:textSize="@dimen/textsize_write_review_large" />
 
     <TextView

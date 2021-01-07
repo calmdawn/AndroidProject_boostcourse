@@ -5,14 +5,16 @@ import java.io.Serializable;
 public class Users implements Serializable {
 
     String name;
+    String date;
     String comment;
 
     int imgRes;
     float starScore;
 
 
-    public Users(String name, String comment, int imgRes, float starScore) {
+    public Users(String name, String date, String comment, int imgRes, float starScore) {
         this.name = name;
+        this.date = date;
         this.comment = comment;
         this.imgRes = imgRes;
         this.starScore = starScore;
@@ -24,6 +26,14 @@ public class Users implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getComment() {

@@ -1,14 +1,9 @@
 package com.example.boostcoursemoblieproject;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -19,6 +14,7 @@ public class ReviewItemsView extends LinearLayout {
 
     CircleImageView profileImgView;
     TextView nameTextView;
+    TextView dateTextView;
     TextView commentTextView;
     RatingBar scoreRatingBar;
 
@@ -38,6 +34,7 @@ public class ReviewItemsView extends LinearLayout {
         layoutInflater.inflate(R.layout.layout_review_items_view, this, true);
 
         profileImgView = findViewById(R.id.view_reviewitems_profile_iv);
+        dateTextView = findViewById(R.id.view_reviewitems_date);
         scoreRatingBar = findViewById(R.id.view_reviewitems_star_score_ratingbar);
         nameTextView = findViewById(R.id.view_reviewitems_name_tv);
         commentTextView = findViewById(R.id.view_reviewitems_comment_tv);
@@ -52,13 +49,16 @@ public class ReviewItemsView extends LinearLayout {
         scoreRatingBar.setRating(score);
     }
 
-    public void setNameTextView(String comment) {
-        nameTextView.setText(comment);
+    public void setNameTextView(String name) {
+        nameTextView.setText(name);
     }
 
     public void setCommentTextView(String comment) {
         commentTextView.setText(comment);
     }
 
+    public void setDateTextView(String date) {
+        dateTextView.setText(date);
+    }
 
 }
