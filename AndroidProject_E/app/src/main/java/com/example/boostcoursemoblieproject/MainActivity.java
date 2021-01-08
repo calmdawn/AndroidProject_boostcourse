@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity implements MoviePosterFragme
 
     private Toolbar toolbar;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

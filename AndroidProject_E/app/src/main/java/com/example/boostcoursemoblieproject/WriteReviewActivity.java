@@ -78,7 +78,7 @@ public class WriteReviewActivity extends AppCompatActivity implements View.OnCli
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                postRequestCreateComment();
             }
         }) {
             @Override

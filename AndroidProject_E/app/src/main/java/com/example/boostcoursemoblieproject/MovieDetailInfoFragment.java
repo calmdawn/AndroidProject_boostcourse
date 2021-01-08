@@ -183,6 +183,7 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(getActivity(), "응답에러" + error, Toast.LENGTH_SHORT).show();
+                        requestMovie();
                     }
                 }
         );
@@ -211,6 +212,7 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(getActivity(), "응답에러" + error, Toast.LENGTH_SHORT).show();
+                        requestCommentList();
                     }
                 }
         );

@@ -89,7 +89,7 @@ public class SeeAllReviewActivity extends AppCompatActivity implements View.OnCl
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        requestAllCommentList(movieId);
                     }
                 }
         );

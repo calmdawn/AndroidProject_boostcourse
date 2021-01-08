@@ -91,6 +91,7 @@ public class MoviePosterContainerFragment extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(getActivity(), "응답에러" + error, Toast.LENGTH_SHORT).show();
+                        requestMovieList();
                     }
                 }
         );
