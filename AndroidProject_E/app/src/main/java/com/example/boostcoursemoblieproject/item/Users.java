@@ -1,15 +1,15 @@
-package com.example.boostcoursemoblieproject;
+package com.example.boostcoursemoblieproject.item;
 
 import java.io.Serializable;
 
 public class Users implements Serializable {
 
-    String name;
-    String date;
-    String comment;
+    private String name;
+    private String date;
+    private String comment;
 
-    int imgRes;
-    float starScore;
+    private int imgRes;
+    private float starScore;
 
 
     public Users(String name, String date, String comment, int imgRes, float starScore) {

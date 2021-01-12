@@ -1,10 +1,12 @@
-package com.example.boostcoursemoblieproject;
+package com.example.boostcoursemoblieproject.common;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.boostcoursemoblieproject.R;
 
 public class CustomToast extends Toast {
 

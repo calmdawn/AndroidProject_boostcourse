@@ -1,4 +1,4 @@
-package com.example.boostcoursemoblieproject;
+package com.example.boostcoursemoblieproject.network;
 
 import com.android.volley.RequestQueue;
 

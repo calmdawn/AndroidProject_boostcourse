@@ -1,4 +1,4 @@
-package com.example.boostcoursemoblieproject;
+package com.example.boostcoursemoblieproject.activity;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +15,11 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.android.volley.toolbox.Volley;
+import com.example.boostcoursemoblieproject.network.AppHelper;
+import com.example.boostcoursemoblieproject.fragment.MovieDetailInfoFragment;
+import com.example.boostcoursemoblieproject.fragment.MoviePosterContainerFragment;
+import com.example.boostcoursemoblieproject.fragment.MoviePosterFragment;
+import com.example.boostcoursemoblieproject.R;
 
 public class MainActivity extends AppCompatActivity implements MoviePosterFragment.ChangeFragmentCallBack {
 
@@ -43,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements MoviePosterFragme
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.drawer_layout);
+
+
         navigationView = findViewById(R.id.nav_view);
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_movie_list, R.id.nav_movie_api, R.id.nav_movie_reserve)

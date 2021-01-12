@@ -1,4 +1,4 @@
-package com.example.boostcoursemoblieproject;
+package com.example.boostcoursemoblieproject.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.boostcoursemoblieproject.R;
 
 
 public class MoviePosterFragment extends Fragment {

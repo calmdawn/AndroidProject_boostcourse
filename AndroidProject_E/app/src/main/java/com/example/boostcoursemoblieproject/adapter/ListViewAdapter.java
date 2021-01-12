@@ -1,9 +1,12 @@
-package com.example.boostcoursemoblieproject;
+package com.example.boostcoursemoblieproject.adapter;
 
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+
+import com.example.boostcoursemoblieproject.item.ReviewItemsView;
+import com.example.boostcoursemoblieproject.item.Users;
 
 import java.util.ArrayList;
 
@@ -48,11 +51,11 @@ public class ListViewAdapter extends BaseAdapter {
             reviewItemsView = (ReviewItemsView) convertView;
         }
         Users item = reviewItems.get(position);
-        reviewItemsView.setProfileImgView(item.imgRes);
-        reviewItemsView.setDateTextView(item.date);
-        reviewItemsView.setScoreRatingBar(item.starScore);
-        reviewItemsView.setNameTextView(item.name);
-        reviewItemsView.setCommentTextView(item.comment);
+        reviewItemsView.setProfileImgView(item.getImgRes());
+        reviewItemsView.setDateTextView(item.getDate());
+        reviewItemsView.setScoreRatingBar(item.getStarScore());
+        reviewItemsView.setNameTextView(item.getName());
+        reviewItemsView.setCommentTextView(item.getComment());
         return reviewItemsView;
     }
 }

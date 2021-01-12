@@ -1,4 +1,4 @@
-package com.example.boostcoursemoblieproject;
+package com.example.boostcoursemoblieproject.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

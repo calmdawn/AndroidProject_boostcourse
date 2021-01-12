@@ -1,4 +1,4 @@
-package com.example.boostcoursemoblieproject;
+package com.example.boostcoursemoblieproject.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,6 +22,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
+import com.example.boostcoursemoblieproject.R;
+import com.example.boostcoursemoblieproject.activity.SeeAllReviewActivity;
+import com.example.boostcoursemoblieproject.activity.WriteReviewActivity;
+import com.example.boostcoursemoblieproject.adapter.ListViewAdapter;
+import com.example.boostcoursemoblieproject.common.CustomToast;
+import com.example.boostcoursemoblieproject.item.CommentList;
+import com.example.boostcoursemoblieproject.item.Movie;
+import com.example.boostcoursemoblieproject.item.ResponseMovieInfo;
+import com.example.boostcoursemoblieproject.item.Users;
+import com.example.boostcoursemoblieproject.network.AppHelper;
 import com.google.gson.Gson;
 
 
@@ -33,6 +43,8 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
 
     public static final int MAX_COMMENT_LIST_DETAIL_INFO_FRAGMENT = 3;
     public static final int REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT = 1000;
+    private static final int NETWORK_REQUEST_COUNT = 3;
+
 
     private int mMovieIdParam;
 
@@ -94,8 +106,8 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
             mMovieIdParam = getArguments().getInt(FRAGMENT_INFO_DETAIL_MOVIE_ID);
         }
 
-        requestMovie();
-        requestCommentList();
+        requestMovie(NETWORK_REQUEST_COUNT);
+        requestCommentList(NETWORK_REQUEST_COUNT);
     }
 
 
@@ -164,7 +176,7 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
         return rootView;
     }
 
-    private void requestMovie() {
+    private void requestMovie(int requestCount) {
         String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovie";
         url += "?" + "id=" + mMovieIdParam;
 
@@ -183,7 +195,11 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(getActivity(), "응답에러" + error, Toast.LENGTH_SHORT).show();
-                        requestMovie();
+                        if (requestCount > 0) {
+                            Toast.makeText(getActivity(), "응답에러영화카운트" + requestCount, Toast.LENGTH_SHORT).show();
+                            requestMovie((requestCount - 1));
+                        }
+
                     }
                 }
         );
@@ -192,7 +208,7 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
         AppHelper.requestQueue.add(request);
     }
 
-    private void requestCommentList() {
+    private void requestCommentList(int requestCount) {
         String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readCommentList";
         url += "?" + "id=" + mMovieIdParam + "&" + "limit=" + MAX_COMMENT_LIST_DETAIL_INFO_FRAGMENT;
 
@@ -212,7 +228,11 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(getActivity(), "응답에러" + error, Toast.LENGTH_SHORT).show();
-                        requestCommentList();
+                        if (requestCount > 0) {
+                            Toast.makeText(getActivity(), "응답에러코멘트카운트" + requestCount, Toast.LENGTH_SHORT).show();
+                            requestCommentList((requestCount - 1));
+                        }
+
                     }
                 }
         );
@@ -223,8 +243,8 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
 
     //MAX_COMMENT_LIST_DETAIL_INFO_FRAGMENT에 설정한 한줄평 최대값만큼만을 보여줌
     private void setListViewCommentList() {
-        for (int i = 0; i < commentList.result.size(); i++) {
-            adapter.addItem(new Users(commentList.result.get(i).writer, commentList.result.get(i).time, commentList.result.get(i).contents, R.drawable.user1, commentList.result.get(i).rating));
+        for (int i = 0; i < commentList.getResult().size(); i++) {
+            adapter.addItem(new Users(commentList.getResult().get(i).getWriter(), commentList.getResult().get(i).getTime(), commentList.getResult().get(i).getContents(), R.drawable.user1, commentList.getResult().get(i).getRating()));
         }
         listView.setAdapter(adapter);
 
@@ -234,7 +254,7 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
         Gson gson = new Gson();
         ResponseMovieInfo responseMovieInfo = gson.fromJson(response, ResponseMovieInfo.class);
 
-        if (responseMovieInfo.code == 200) {
+        if (responseMovieInfo.getCode() == 200) {
             if (requestCode == MovieRequestCode) {
                 movie = gson.fromJson(response, Movie.class);
             } else if (requestCode == CommentListRequestCode) {
@@ -245,21 +265,21 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
     }
 
     private void setMovieDetailInfo() {
-        Glide.with(getActivity()).load(movie.result.get(0).image).into(detailPosterIv);
-        detailMovieNameTv.setText(movie.result.get(0).title);
-        detailMovieDateTv.setText(movie.result.get(0).date + " 개봉");
-        detailMovieCategoryTv.setText(movie.result.get(0).genre + " / " + movie.result.get(0).duration + "분");
-        thumbUpTextView.setText(String.valueOf(movie.result.get(0).like));
-        thumbDownTextView.setText(String.valueOf(movie.result.get(0).dislike));
+        Glide.with(getActivity()).load(movie.getResult().get(0).getImage()).into(detailPosterIv);
+        detailMovieNameTv.setText(movie.getResult().get(0).getTitle());
+        detailMovieDateTv.setText(movie.getResult().get(0).getDate() + " 개봉");
+        detailMovieCategoryTv.setText(movie.getResult().get(0).getGenre() + " / " + movie.getResult().get(0).getDuration() + "분");
+        thumbUpTextView.setText(String.valueOf(movie.getResult().get(0).getLike()));
+        thumbDownTextView.setText(String.valueOf(movie.getResult().get(0).getDislike()));
 
-        detailMovieReservationTv.setText(movie.result.get(0).reservation_grade + "위" + " " + movie.result.get(0).reservation_rate + "%");
-        detailMovieUserRateTv.setText(String.valueOf(movie.result.get(0).user_rating));
-        detailMovieUserRatingbar.setRating(movie.result.get(0).user_rating);
-        detailMovieAudienceTv.setText(movie.result.get(0).audience + "명");
+        detailMovieReservationTv.setText(movie.getResult().get(0).getReservation_grade() + "위" + " " + movie.getResult().get(0).getReservation_rate() + "%");
+        detailMovieUserRateTv.setText(String.valueOf(movie.getResult().get(0).getUser_rating()));
+        detailMovieUserRatingbar.setRating(movie.getResult().get(0).getUser_rating());
+        detailMovieAudienceTv.setText(movie.getResult().get(0).getAudience() + "명");
 
-        detailMovieSynopsisTv.setText(movie.result.get(0).synopsis);
-        detailMovieDirectorTv.setText(movie.result.get(0).director);
-        detailMovieActorTv.setText(movie.result.get(0).actor);
+        detailMovieSynopsisTv.setText(movie.getResult().get(0).getSynopsis());
+        detailMovieDirectorTv.setText(movie.getResult().get(0).getDirector());
+        detailMovieActorTv.setText(movie.getResult().get(0).getActor());
     }
 
     @Override
@@ -272,7 +292,7 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
                 intent = new Intent(getActivity(), WriteReviewActivity.class);
                 intent.putExtra("requestCode", REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT);
                 //영화 이름, 영화 아이디를 넘겨줌
-                intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_NAME, movie.result.get(0).title);
+                intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_NAME, movie.getResult().get(0).getTitle());
                 intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_ID, mMovieIdParam);
                 startActivityForResult(intent, REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT);
                 break;
@@ -281,9 +301,9 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
                 customToast.makeText(getResources().getString(R.string.movie_detail_info_toast_review_all), Toast.LENGTH_SHORT);
                 intent = new Intent(getActivity(), SeeAllReviewActivity.class);
                 //영화 이름, 아이디, 별점을 넘겨줌
-                intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_NAME, movie.result.get(0).title);
+                intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_NAME, movie.getResult().get(0).getTitle());
                 intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_ID, mMovieIdParam);
-                intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_RATE, movie.result.get(0).user_rating);
+                intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_RATE, movie.getResult().get(0).getUser_rating());
 
                 startActivityForResult(intent, REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT);
                 break;
@@ -298,11 +318,11 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
 
         if (requestCode == REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT) {
             if (resultCode == WriteReviewActivity.RESULT_CODE_OF_WRITE_REVIEW_ACTIVITY) {
-                adapter.reviewItems.clear();
-                requestCommentList();
+                adapter.getReviewItems().clear();
+                requestCommentList(NETWORK_REQUEST_COUNT);
             } else if (resultCode == SeeAllReviewActivity.RESULT_CODE_OF_SEE_ALL_REVIEW_ACTIVITY) {
-                adapter.reviewItems.clear();
-                requestCommentList();
+                adapter.getReviewItems().clear();
+                requestCommentList(NETWORK_REQUEST_COUNT);
             }
         }
 

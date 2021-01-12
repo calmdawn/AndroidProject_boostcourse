@@ -1,12 +1,15 @@
-package com.example.boostcoursemoblieproject;
+package com.example.boostcoursemoblieproject.item;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
+import com.example.boostcoursemoblieproject.R;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 

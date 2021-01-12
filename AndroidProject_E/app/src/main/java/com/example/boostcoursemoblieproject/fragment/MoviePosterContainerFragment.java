@@ -1,4 +1,4 @@
-package com.example.boostcoursemoblieproject;
+package com.example.boostcoursemoblieproject.fragment;
 
 import android.graphics.Point;
 import android.os.Bundle;
@@ -15,12 +15,18 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.example.boostcoursemoblieproject.network.AppHelper;
+import com.example.boostcoursemoblieproject.item.MovieList;
+import com.example.boostcoursemoblieproject.R;
+import com.example.boostcoursemoblieproject.item.ResponseMovieInfo;
+import com.example.boostcoursemoblieproject.adapter.MoviePosterPagerAdapter;
 import com.google.gson.Gson;
 
 
 public class MoviePosterContainerFragment extends Fragment {
 
     public static final int NUM_OF_FRAGMENTS = 5;
+    private static final int NETWORK_REQUEST_COUNT = 3;
 
     MovieList movieList;
 
@@ -33,7 +39,7 @@ public class MoviePosterContainerFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //서버에서 영화정보 가져오기
-        requestMovieList();
+        requestMovieList(NETWORK_REQUEST_COUNT);
     }
 
     @Override
@@ -63,9 +69,9 @@ public class MoviePosterContainerFragment extends Fragment {
 
     private void setMoviePosterFragment() {
         for (int i = 0; i < moviePosterFragments.length; i++) {
-            String drawableResId = movieList.result.get(i).image;
-            String PosterName = movieList.result.get(i).title;
-            String posterInfo = "예매율 " + movieList.result.get(i).reservation_rate + "% | " + movieList.result.get(i).grade + "세 관람가";
+            String drawableResId = movieList.getResult().get(i).getImage();
+            String PosterName = movieList.getResult().get(i).getTitle();
+            String posterInfo = "예매율 " + movieList.getResult().get(i).getReservation_rate() + "% | " + movieList.getResult().get(i).getGrade() + "세 관람가";
             int movieId = i + 1;
             moviePosterFragments[i] = MoviePosterFragment.newInstance(drawableResId, PosterName, posterInfo, movieId);
             moviePosterPagerAdapter.addItem(moviePosterFragments[i]);
@@ -73,7 +79,7 @@ public class MoviePosterContainerFragment extends Fragment {
         viewPager.setAdapter(moviePosterPagerAdapter);
     }
 
-    public void requestMovieList() {
+    public void requestMovieList(int requestCount) {
         String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovieList";
         url += "?" + "type=1";
 
@@ -91,7 +97,8 @@ public class MoviePosterContainerFragment extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(getActivity(), "응답에러" + error, Toast.LENGTH_SHORT).show();
-                        requestMovieList();
+                        Toast.makeText(getActivity(), "응답에러영화목록카운트" + requestCount, Toast.LENGTH_SHORT).show();
+                        requestMovieList((requestCount-1));
                     }
                 }
         );
@@ -105,7 +112,7 @@ public class MoviePosterContainerFragment extends Fragment {
         Gson gson = new Gson();
         ResponseMovieInfo responseMovieInfo = gson.fromJson(response, ResponseMovieInfo.class);
 
-        if (responseMovieInfo.code == 200) {
+        if (responseMovieInfo.getCode() == 200) {
             movieList = gson.fromJson(response, MovieList.class);
         }
     }

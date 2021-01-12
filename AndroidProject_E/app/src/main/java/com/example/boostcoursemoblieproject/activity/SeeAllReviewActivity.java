@@ -1,4 +1,4 @@
-package com.example.boostcoursemoblieproject;
+package com.example.boostcoursemoblieproject.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +18,14 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.example.boostcoursemoblieproject.network.AppHelper;
+import com.example.boostcoursemoblieproject.item.CommentList;
+import com.example.boostcoursemoblieproject.common.CustomToast;
+import com.example.boostcoursemoblieproject.fragment.MovieDetailInfoFragment;
+import com.example.boostcoursemoblieproject.R;
+import com.example.boostcoursemoblieproject.item.ResponseMovieInfo;
+import com.example.boostcoursemoblieproject.item.Users;
+import com.example.boostcoursemoblieproject.adapter.ListViewAdapter;
 import com.google.gson.Gson;
 
 public class SeeAllReviewActivity extends AppCompatActivity implements View.OnClickListener {
@@ -83,7 +91,7 @@ public class SeeAllReviewActivity extends AppCompatActivity implements View.OnCl
                     public void onResponse(String response) {
                         processResponseConvertGson(response);
                         setListViewAllCommentList();
-                        reviewPeopleTv.setText("(" + commentList.result.size() + "명 참여)");
+                        reviewPeopleTv.setText("(" + commentList.getResult().size() + "명 참여)");
                     }
                 },
                 new Response.ErrorListener() {
@@ -100,8 +108,8 @@ public class SeeAllReviewActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void setListViewAllCommentList() {
-        for (int i = 0; i < commentList.result.size(); i++) {
-            seeAllAdapter.addItem(new Users(commentList.result.get(i).writer, commentList.result.get(i).time, commentList.result.get(i).contents, R.drawable.user1, commentList.result.get(i).rating));
+        for (int i = 0; i < commentList.getResult().size(); i++) {
+            seeAllAdapter.addItem(new Users(commentList.getResult().get(i).getWriter(), commentList.getResult().get(i).getTime(), commentList.getResult().get(i).getContents(), R.drawable.user1, commentList.getResult().get(i).getRating()));
         }
         seeAllListView.setAdapter(seeAllAdapter);
     }
@@ -110,7 +118,7 @@ public class SeeAllReviewActivity extends AppCompatActivity implements View.OnCl
         Gson gson = new Gson();
         ResponseMovieInfo responseMovieInfo = gson.fromJson(response, ResponseMovieInfo.class);
 
-        if (responseMovieInfo.code == 200) {
+        if (responseMovieInfo.getCode() == 200) {
             commentList = gson.fromJson(response, CommentList.class);
         }
 
@@ -142,7 +150,7 @@ public class SeeAllReviewActivity extends AppCompatActivity implements View.OnCl
         if (requestCode == REQUEST_CODE_OF_SEE_ALL_REVIEW_ACTIVITY) {
             if (resultCode == WriteReviewActivity.RESULT_CODE_OF_WRITE_REVIEW_ACTIVITY) {
                 //  리뷰 작성시 바로 반영
-                seeAllAdapter.reviewItems.clear();
+                seeAllAdapter.getReviewItems().clear();
                 requestAllCommentList(movieId);
             }
         }

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_movie_list"
-        android:name="com.example.boostcoursemoblieproject.MoviePosterContainerFragment"
+        android:name="com.example.boostcoursemoblieproject.fragment.MoviePosterContainerFragment"
         android:label="@string/menu_movie_list"
         tools:layout="@layout/fragment_movie_poster_container"/>
 
