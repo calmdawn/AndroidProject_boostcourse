@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="padding_nav_header">16dp</dimen>
+    <dimen name="margin_nav_header_large">16dp</dimen>
+    <dimen name="margin_nav_header_medium">8dp</dimen>
+
+
+    <!--    MovieDetailInfoFragment-->
+    <dimen name="margin_movie_detail_info_between_background">20dp</dimen>
+    <dimen name="padding_movie_detail_info_outside_layout">20dp</dimen>
+    <dimen name="height_movie_detail_info_poster_layout">240dp</dimen>
+
+
+    <!--영화포스터설명-->
+    <dimen name="textsize_movie_detail_info_poster_large">24sp</dimen>
+    <dimen name="textsize_movie_detail_info_poster_medium">20sp</dimen>
+    <dimen name="textsize_movie_detail_info_poster_small">16sp</dimen>
+
+    <!--예매율, 평점, 누적관객수-->
+
+    <dimen name="textsize_movie_detail_info_movie_rate_large">24sp</dimen>
+    <dimen name="textsize_movie_detail_info_movie_rate_medium">20sp</dimen>
+    <dimen name="textsize_movie_detail_info_movie_rate_small">16sp</dimen>
+
+    <!--    줄거리, 감독, 출연-->
+
+    <dimen name="textsize_movie_detail_info_contents_large">24sp</dimen>
+    <dimen name="textsize_movie_detail_info_contents_medium">20sp</dimen>
+    <dimen name="textsize_movie_detail_info_contents_small">16sp</dimen>
+
+
+    <!--    한줄평-->
+    <dimen name="textsize_reviewitems_large">14sp</dimen>
+    <dimen name="textsize_reviewitems_medium">12sp</dimen>
+    <dimen name="textsize_reviewitems_small">10sp</dimen>
+
+
+    <!--    기타-->
+    <dimen name="textsize_movie_detail_info_btn_large">24sp</dimen>
+    <dimen name="textsize_movie_detail_info_btn_medium">20sp</dimen>
+    <dimen name="textsize_movie_detail_info_btn_small">16sp</dimen>
+
+
+    <!--    WriteReviewActivity-->
+
+    <dimen name="margin_write_review_between_widget">8dp</dimen>
+    <dimen name="textsize_write_review_large">24sp</dimen>
+    <dimen name="textsize_write_review_medium">20sp</dimen>
+    <dimen name="textsize_write_review_small">16sp</dimen>
+
+
+    <!--    SeeAllReviewActivity-->
+    <dimen name="margin_see_all_review_between_layout">8dp</dimen>
+    <dimen name="padding_see_all_review_inside_layout">8dp</dimen>
+    <dimen name="textsize_see_all_review_large">24sp</dimen>
+    <dimen name="textsize_see_all_review_medium">20sp</dimen>
+    <dimen name="textsize_see_all_review_small">16sp</dimen>
+
+    <!--    MovieDetailInfoFragment-->
+
+    <dimen name="margin_movie_detail_between_widget">8dp</dimen>
+    <dimen name="textsize_movie_detail_large">20sp</dimen>
+    <dimen name="textsize_movie_detail_medium">16sp</dimen>
+    <dimen name="textsize_movie_detail_small">12sp</dimen>
+
+
+</resources>
