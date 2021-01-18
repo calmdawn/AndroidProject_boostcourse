@@ -2,8 +2,8 @@ package com.example.boostcoursemoblieproject.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,7 +44,6 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
     public static final int MAX_COMMENT_LIST_DETAIL_INFO_FRAGMENT = 3;
     public static final int REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT = 1000;
     private static final int NETWORK_REQUEST_COUNT = 3;
-
 
     private int mMovieIdParam;
 
