@@ -4,32 +4,31 @@ import android.content.Context;
 import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.room.Room;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.example.boostcoursemoblieproject.R;
+import com.example.boostcoursemoblieproject.adapter.MoviePosterPagerAdapter;
 import com.example.boostcoursemoblieproject.item.AppDataBase;
+import com.example.boostcoursemoblieproject.item.MovieList;
 import com.example.boostcoursemoblieproject.item.MoviePosterEntity;
 import com.example.boostcoursemoblieproject.item.MoviePosterEntityDao;
-import com.example.boostcoursemoblieproject.network.AppHelper;
-import com.example.boostcoursemoblieproject.item.MovieList;
-import com.example.boostcoursemoblieproject.R;
 import com.example.boostcoursemoblieproject.item.ResponseMovieInfo;
-import com.example.boostcoursemoblieproject.adapter.MoviePosterPagerAdapter;
+import com.example.boostcoursemoblieproject.network.AppHelper;
+import com.example.boostcoursemoblieproject.network.NetworkState;
 import com.google.gson.Gson;
+
+import java.util.List;
 
 
 public class MoviePosterContainerFragment extends Fragment {
@@ -37,27 +36,27 @@ public class MoviePosterContainerFragment extends Fragment {
     public static final int NUM_OF_FRAGMENTS = 5;
     private static final int NETWORK_REQUEST_COUNT = 3;
 
+    private static final int ROOM_QUERY_GET_ALL = 100;
+    private static final int ROOM_QUERY_INSERT = 200;
+
     MovieList movieList;
 
     private ViewPager viewPager;
     private MoviePosterPagerAdapter moviePosterPagerAdapter;
     private MoviePosterFragment[] moviePosterFragments;
 
+
+    //    DB생성
     private AppDataBase db;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        db = Room.databaseBuilder(context, AppDataBase.class, "poster-db").allowMainThreadQueries().build();
+        //        싱글톤으로 DB가져오기
+        db = AppDataBase.getAppDataBase(context);
+        NetworkState.getConnectivityStatus(context);
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        //서버에서 영화정보 가져오기
-        requestMovieList(NETWORK_REQUEST_COUNT);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,23 +79,58 @@ public class MoviePosterContainerFragment extends Fragment {
         viewPager.setClipToPadding(false);
         viewPager.setPadding(padding, 0, padding, 0);
 
+        //인터넷 연결된상태, 아닌상태
+
+        if (NetworkState.status == NetworkState.TYPE_CONNECT) {
+            //서버에서 영화정보 가져오기
+            requestMovieList(NETWORK_REQUEST_COUNT);
+            Toast.makeText(getActivity(), "인터넷 연결됨", Toast.LENGTH_SHORT).show();
+        } else if (NetworkState.status == NetworkState.TYPE_NOT_CONNECTED) {
+            Toast.makeText(getActivity(), "인터넷 연결안됨 DB에서 불러옴", Toast.LENGTH_SHORT).show();
+            try {
+                List<MoviePosterEntity> entities = new DaoAsyncTask(db.moviePosterEntityDao(), ROOM_QUERY_GET_ALL).execute().get();
+                setNotConnectedNetMoviePosterFragment(entities);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
 
         return rootView;
     }
 
 
-    private void setMoviePosterFragment() {
+    private void setNotConnectedNetMoviePosterFragment(List<MoviePosterEntity> entities) {
         for (int i = 0; i < moviePosterFragments.length; i++) {
-            String drawableResId = movieList.getResult().get(i).getImage();
+            String posterName = entities.get(i).getTitle();
+            float posterRate = entities.get(i).getReservation_rate();
+            int posterGrade = entities.get(i).getGrade();
+            String drawableResId = entities.get(i).getImage();
+
+            String posterInfo = "예매율 " + posterRate + "% | " + posterGrade + "세 관람가";
+            int movieId = i + 1;
+
+            moviePosterFragments[i] = MoviePosterFragment.newInstance(drawableResId, posterName, posterInfo, movieId);
+            moviePosterPagerAdapter.addItem(moviePosterFragments[i]);
+        }
+        viewPager.setAdapter(moviePosterPagerAdapter);
+    }
+
+
+    private void setConnectedNetMoviePosterFragment() {
+        for (int i = 0; i < moviePosterFragments.length; i++) {
             String posterName = movieList.getResult().get(i).getTitle();
             float posterRate = movieList.getResult().get(i).getReservation_rate();
             int posterGrade = movieList.getResult().get(i).getGrade();
+            String drawableResId = movieList.getResult().get(i).getImage();
+
             String posterInfo = "예매율 " + posterRate + "% | " + posterGrade + "세 관람가";
             int movieId = i + 1;
 
 
             //  DB에 넣어주기
-            new DaoAsyncTask(db.moviePosterEntityDao()).execute(new MoviePosterEntity(
+            new DaoAsyncTask(db.moviePosterEntityDao(), ROOM_QUERY_INSERT).execute(new MoviePosterEntity(
                     posterName, posterRate,
                     posterGrade, drawableResId));
 
@@ -121,7 +155,7 @@ public class MoviePosterContainerFragment extends Fragment {
                     @Override
                     public void onResponse(String response) {
                         processResponseConvertGson(response);
-                        setMoviePosterFragment();
+                        setConnectedNetMoviePosterFragment();
 
                     }
                 },
@@ -151,17 +185,32 @@ public class MoviePosterContainerFragment extends Fragment {
     }
 
 
-    private static class DaoAsyncTask extends AsyncTask<MoviePosterEntity, Void, Void> {
+    private static class DaoAsyncTask extends AsyncTask<MoviePosterEntity, Void, List<MoviePosterEntity>> {
 
         private MoviePosterEntityDao mDao;
+        private int command;
 
-        public DaoAsyncTask(MoviePosterEntityDao mDao) {
+        public DaoAsyncTask(MoviePosterEntityDao mDao, int command) {
             this.mDao = mDao;
+            this.command = command;
         }
 
         @Override
-        protected Void doInBackground(MoviePosterEntity... moviePosterEntities) {
-            mDao.update(moviePosterEntities[0]);
+        protected List<MoviePosterEntity> doInBackground(MoviePosterEntity... moviePosterEntities) {
+
+            if (command == ROOM_QUERY_GET_ALL) {
+                return mDao.getAll();
+
+            } else if (command == ROOM_QUERY_INSERT) {
+                //영화의 개수만큼까지만 DB에 저장.
+                if (mDao.getAll().size() >= NUM_OF_FRAGMENTS) {
+                    mDao.update(moviePosterEntities[0]);
+                } else {
+                    mDao.insert(moviePosterEntities[0]);
+                }
+
+            }
+
             return null;
         }
     }

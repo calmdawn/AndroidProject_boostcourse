@@ -3,6 +3,7 @@ package com.example.boostcoursemoblieproject.item;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -13,7 +14,7 @@ public interface MoviePosterEntityDao {
     @Query("SELECT * FROM MoviePosterEntity")
     List<MoviePosterEntity> getAll();
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(MoviePosterEntity moviePosterEntity);
 
     @Update
