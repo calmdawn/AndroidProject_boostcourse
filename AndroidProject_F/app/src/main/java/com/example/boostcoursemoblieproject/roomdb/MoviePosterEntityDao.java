@@ -1,4 +1,4 @@
-package com.example.boostcoursemoblieproject.item;
+package com.example.boostcoursemoblieproject.roomdb;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -6,6 +6,8 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
+
+import com.example.boostcoursemoblieproject.roomdb.MoviePosterEntity;
 
 import java.util.List;
 

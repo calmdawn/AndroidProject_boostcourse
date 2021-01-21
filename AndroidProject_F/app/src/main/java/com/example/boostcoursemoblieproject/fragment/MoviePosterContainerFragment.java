@@ -19,10 +19,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.boostcoursemoblieproject.R;
 import com.example.boostcoursemoblieproject.adapter.MoviePosterPagerAdapter;
-import com.example.boostcoursemoblieproject.item.AppDataBase;
+import com.example.boostcoursemoblieproject.roomdb.AppDataBase;
 import com.example.boostcoursemoblieproject.item.MovieList;
-import com.example.boostcoursemoblieproject.item.MoviePosterEntity;
-import com.example.boostcoursemoblieproject.item.MoviePosterEntityDao;
+import com.example.boostcoursemoblieproject.roomdb.MoviePosterEntity;
+import com.example.boostcoursemoblieproject.roomdb.MoviePosterEntityDao;
 import com.example.boostcoursemoblieproject.item.ResponseMovieInfo;
 import com.example.boostcoursemoblieproject.network.AppHelper;
 import com.example.boostcoursemoblieproject.network.NetworkState;
@@ -36,8 +36,6 @@ public class MoviePosterContainerFragment extends Fragment {
     public static final int NUM_OF_FRAGMENTS = 5;
     private static final int NETWORK_REQUEST_COUNT = 3;
 
-    private static final int ROOM_QUERY_GET_ALL = 100;
-    private static final int ROOM_QUERY_INSERT = 200;
 
     MovieList movieList;
 
@@ -86,9 +84,9 @@ public class MoviePosterContainerFragment extends Fragment {
             requestMovieList(NETWORK_REQUEST_COUNT);
             Toast.makeText(getActivity(), "인터넷 연결됨", Toast.LENGTH_SHORT).show();
         } else if (NetworkState.status == NetworkState.TYPE_NOT_CONNECTED) {
-            Toast.makeText(getActivity(), "인터넷 연결안됨 DB에서 불러옴", Toast.LENGTH_SHORT).show();
+
             try {
-                List<MoviePosterEntity> entities = new DaoAsyncTask(db.moviePosterEntityDao(), ROOM_QUERY_GET_ALL).execute().get();
+                List<MoviePosterEntity> entities = new DaoAsyncTask(db.moviePosterEntityDao(), AppDataBase.ROOM_QUERY_GET_ALL).execute().get();
                 setNotConnectedNetMoviePosterFragment(entities);
 
             } catch (Exception e) {
@@ -130,7 +128,7 @@ public class MoviePosterContainerFragment extends Fragment {
 
 
             //  DB에 넣어주기
-            new DaoAsyncTask(db.moviePosterEntityDao(), ROOM_QUERY_INSERT).execute(new MoviePosterEntity(
+            new DaoAsyncTask(db.moviePosterEntityDao(), AppDataBase.ROOM_QUERY_INSERT).execute(new MoviePosterEntity(
                     posterName, posterRate,
                     posterGrade, drawableResId));
 
@@ -198,10 +196,10 @@ public class MoviePosterContainerFragment extends Fragment {
         @Override
         protected List<MoviePosterEntity> doInBackground(MoviePosterEntity... moviePosterEntities) {
 
-            if (command == ROOM_QUERY_GET_ALL) {
+            if (command == AppDataBase.ROOM_QUERY_GET_ALL) {
                 return mDao.getAll();
 
-            } else if (command == ROOM_QUERY_INSERT) {
+            } else if (command == AppDataBase.ROOM_QUERY_INSERT) {
                 //영화의 개수만큼까지만 DB에 저장.
                 if (mDao.getAll().size() >= NUM_OF_FRAGMENTS) {
                     mDao.update(moviePosterEntities[0]);

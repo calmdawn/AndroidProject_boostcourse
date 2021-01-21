@@ -1,4 +1,4 @@
-package com.example.boostcoursemoblieproject.item;
+package com.example.boostcoursemoblieproject.roomdb;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;

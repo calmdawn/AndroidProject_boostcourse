@@ -1,9 +1,9 @@
 package com.example.boostcoursemoblieproject.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,6 +16,9 @@ import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -32,7 +35,15 @@ import com.example.boostcoursemoblieproject.item.Movie;
 import com.example.boostcoursemoblieproject.item.ResponseMovieInfo;
 import com.example.boostcoursemoblieproject.item.Users;
 import com.example.boostcoursemoblieproject.network.AppHelper;
+import com.example.boostcoursemoblieproject.network.NetworkState;
+import com.example.boostcoursemoblieproject.roomdb.AppDataBase;
+import com.example.boostcoursemoblieproject.roomdb.CommentListEntity;
+import com.example.boostcoursemoblieproject.roomdb.CommentListEntityDao;
+import com.example.boostcoursemoblieproject.roomdb.MovieDetailEntity;
+import com.example.boostcoursemoblieproject.roomdb.MovieDetailEntityDao;
 import com.google.gson.Gson;
+
+import java.util.List;
 
 
 public class MovieDetailInfoFragment extends Fragment implements View.OnClickListener {
@@ -43,7 +54,7 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
 
     public static final int MAX_COMMENT_LIST_DETAIL_INFO_FRAGMENT = 3;
     public static final int REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT = 1000;
-    private static final int NETWORK_REQUEST_COUNT = 3;
+    private static final int NETWORK_REQUEST_COUNT = 2;
 
     private int mMovieIdParam;
 
@@ -84,6 +95,9 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
     private int MovieRequestCode = 201;
     private int CommentListRequestCode = 202;
 
+    private AppDataBase db;
+    private MovieDetailEntity detailEntity;
+
     public MovieDetailInfoFragment() {
 
     }
@@ -96,6 +110,11 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
         return movieDetailInfoFragment;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        db = AppDataBase.getAppDataBase(context);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,9 +123,6 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
         if (getArguments() != null) {
             mMovieIdParam = getArguments().getInt(FRAGMENT_INFO_DETAIL_MOVIE_ID);
         }
-
-        requestMovie(NETWORK_REQUEST_COUNT);
-        requestCommentList(NETWORK_REQUEST_COUNT);
     }
 
 
@@ -114,7 +130,6 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_movie_detail_info, container, false);
         thumbUpImgBtn = rootView.findViewById(R.id.fragment_movie_detail_thumb_up_imgbtn);
-
 
         // 영화 상세화면
 
@@ -172,8 +187,114 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
             }
         });
 
+
+        //인터넷 연결된 상태, 아닌 상태
+        if (NetworkState.status == NetworkState.TYPE_CONNECT) {
+            Toast.makeText(getActivity(), "인터넷 연결됨", Toast.LENGTH_SHORT).show();
+            requestMovie(NETWORK_REQUEST_COUNT);
+            requestCommentList(NETWORK_REQUEST_COUNT);
+        } else if (NetworkState.status == NetworkState.TYPE_NOT_CONNECTED) {
+            Toast.makeText(getActivity(), "인터넷 연결안됨 DB에서 불러옴", Toast.LENGTH_SHORT).show();
+            try {
+                List<MovieDetailEntity> movieDetailEntities = new MovieDetailDaoAsyncTask(db.movieDetailEntityDao(), AppDataBase.ROOM_QUERY_GET_ALL).execute().get();
+                for (int i = 0; i < movieDetailEntities.size(); i++) {
+                    if (mMovieIdParam == movieDetailEntities.get(i).getMovieId()) {
+                        detailEntity = movieDetailEntities.get(i);
+                        setNotConnectedNetworkMovieDetailInfo(detailEntity);
+                    }
+                }
+
+                List<CommentListEntity> commentListEntities = new CommendListDaoAsyncTask(db.commentListEntityDao(), AppDataBase.ROOM_QUERY_GET_ALL, mMovieIdParam).execute().get();
+                setNotConnectedNetworkListViewCommentList(commentListEntities);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
         return rootView;
     }
+
+    private void setNotConnectedNetworkListViewCommentList(List<CommentListEntity> commentListEntities) {
+        adapter.getReviewItems().clear();
+        for (int i = 0; i < commentListEntities.size(); i++) {
+            adapter.addItem(new Users(commentListEntities.get(i).getWriter(),
+                    commentListEntities.get(i).getTime(), commentListEntities.get(i).getContents(),
+                    R.drawable.user1, commentListEntities.get(i).getRating()));
+        }
+        listView.setAdapter(adapter);
+    }
+
+
+    //MAX_COMMENT_LIST_DETAIL_INFO_FRAGMENT에 설정한 한줄평 최대값만큼만을 보여줌
+    private void setListViewCommentList() {
+
+        //서버에서 불러와 값 설정 후 DB에 저장
+        for (int i = 0; i < commentList.getResult().size(); i++) {
+            adapter.addItem(new Users(commentList.getResult().get(i).getWriter(),
+                    commentList.getResult().get(i).getTime(), commentList.getResult().get(i).getContents(),
+                    R.drawable.user1, commentList.getResult().get(i).getRating()));
+
+            Toast.makeText(getActivity(), "코멘트 DB " + i + "번째 인서트 성공이여", Toast.LENGTH_SHORT).show();
+
+            new CommendListDaoAsyncTask(db.commentListEntityDao(), AppDataBase.ROOM_QUERY_INSERT, mMovieIdParam).execute(new CommentListEntity(
+                    mMovieIdParam, commentList.getResult().get(i).getWriter(), commentList.getResult().get(i).getWriter_image(),
+                    commentList.getResult().get(i).getTime(), commentList.getResult().get(i).getRating(), commentList.getResult().get(i).getContents()));
+        }
+        listView.setAdapter(adapter);
+
+    }
+
+
+    private void setNotConnectedNetworkMovieDetailInfo(MovieDetailEntity movieDetailEntity) {
+        Glide.with(getActivity()).load(movieDetailEntity.getImage()).into(detailPosterIv);
+        detailMovieNameTv.setText(movieDetailEntity.getTitle());
+        detailMovieDateTv.setText(movieDetailEntity.getDate() + " 개봉");
+        detailMovieCategoryTv.setText(movieDetailEntity.getGenre() + " / " + movieDetailEntity.getDuration() + "분");
+        thumbUpTextView.setText(String.valueOf(movieDetailEntity.getLike()));
+        thumbDownTextView.setText(String.valueOf(movieDetailEntity.getDislike()));
+
+        detailMovieReservationTv.setText(movieDetailEntity.getReservation_grade() + "위" + " " + movieDetailEntity.getReservation_rate() + "%");
+        detailMovieUserRateTv.setText(String.valueOf(movieDetailEntity.getUser_rating()));
+        detailMovieUserRatingbar.setRating(movieDetailEntity.getUser_rating());
+        detailMovieAudienceTv.setText(movieDetailEntity.getAudience() + "명");
+
+        detailMovieSynopsisTv.setText(movieDetailEntity.getSynopsis());
+        detailMovieDirectorTv.setText(movieDetailEntity.getDirector());
+        detailMovieActorTv.setText(movieDetailEntity.getActor());
+    }
+
+    private void setMovieDetailInfo() {
+        Glide.with(getActivity()).load(movie.getResult().get(0).getImage()).into(detailPosterIv);
+        detailMovieNameTv.setText(movie.getResult().get(0).getTitle());
+        detailMovieDateTv.setText(movie.getResult().get(0).getDate() + " 개봉");
+        detailMovieCategoryTv.setText(movie.getResult().get(0).getGenre() + " / " + movie.getResult().get(0).getDuration() + "분");
+        thumbUpTextView.setText(String.valueOf(movie.getResult().get(0).getLike()));
+        thumbDownTextView.setText(String.valueOf(movie.getResult().get(0).getDislike()));
+
+        detailMovieReservationTv.setText(movie.getResult().get(0).getReservation_grade() + "위" + " " + movie.getResult().get(0).getReservation_rate() + "%");
+        detailMovieUserRateTv.setText(String.valueOf(movie.getResult().get(0).getUser_rating()));
+        detailMovieUserRatingbar.setRating(movie.getResult().get(0).getUser_rating());
+        detailMovieAudienceTv.setText(movie.getResult().get(0).getAudience() + "명");
+
+        detailMovieSynopsisTv.setText(movie.getResult().get(0).getSynopsis());
+        detailMovieDirectorTv.setText(movie.getResult().get(0).getDirector());
+        detailMovieActorTv.setText(movie.getResult().get(0).getActor());
+
+        Toast.makeText(getActivity(), "디테일 DB 인서트 성공이여", Toast.LENGTH_SHORT).show();
+
+        new MovieDetailDaoAsyncTask(db.movieDetailEntityDao(), AppDataBase.ROOM_QUERY_INSERT).execute(new MovieDetailEntity(mMovieIdParam,
+                movie.getResult().get(0).getTitle(), movie.getResult().get(0).getDate(),
+                movie.getResult().get(0).getUser_rating(), movie.getResult().get(0).getAudience_rating(),
+                movie.getResult().get(0).getReservation_rate(), movie.getResult().get(0).getGrade(),
+                movie.getResult().get(0).getImage(), movie.getResult().get(0).getGenre(), movie.getResult().get(0).getDuration(),
+                movie.getResult().get(0).getAudience(), movie.getResult().get(0).getSynopsis(), movie.getResult().get(0).getDirector(),
+                movie.getResult().get(0).getActor(), movie.getResult().get(0).getLike(), movie.getResult().get(0).getDislike()
+        ));
+
+    }
+
 
     private void requestMovie(int requestCount) {
         String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovie";
@@ -241,14 +362,6 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
         AppHelper.requestQueue.add(request);
     }
 
-    //MAX_COMMENT_LIST_DETAIL_INFO_FRAGMENT에 설정한 한줄평 최대값만큼만을 보여줌
-    private void setListViewCommentList() {
-        for (int i = 0; i < commentList.getResult().size(); i++) {
-            adapter.addItem(new Users(commentList.getResult().get(i).getWriter(), commentList.getResult().get(i).getTime(), commentList.getResult().get(i).getContents(), R.drawable.user1, commentList.getResult().get(i).getRating()));
-        }
-        listView.setAdapter(adapter);
-
-    }
 
     public void processResponseConvertGson(String response, int requestCode) {
         Gson gson = new Gson();
@@ -264,23 +377,6 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
 
     }
 
-    private void setMovieDetailInfo() {
-        Glide.with(getActivity()).load(movie.getResult().get(0).getImage()).into(detailPosterIv);
-        detailMovieNameTv.setText(movie.getResult().get(0).getTitle());
-        detailMovieDateTv.setText(movie.getResult().get(0).getDate() + " 개봉");
-        detailMovieCategoryTv.setText(movie.getResult().get(0).getGenre() + " / " + movie.getResult().get(0).getDuration() + "분");
-        thumbUpTextView.setText(String.valueOf(movie.getResult().get(0).getLike()));
-        thumbDownTextView.setText(String.valueOf(movie.getResult().get(0).getDislike()));
-
-        detailMovieReservationTv.setText(movie.getResult().get(0).getReservation_grade() + "위" + " " + movie.getResult().get(0).getReservation_rate() + "%");
-        detailMovieUserRateTv.setText(String.valueOf(movie.getResult().get(0).getUser_rating()));
-        detailMovieUserRatingbar.setRating(movie.getResult().get(0).getUser_rating());
-        detailMovieAudienceTv.setText(movie.getResult().get(0).getAudience() + "명");
-
-        detailMovieSynopsisTv.setText(movie.getResult().get(0).getSynopsis());
-        detailMovieDirectorTv.setText(movie.getResult().get(0).getDirector());
-        detailMovieActorTv.setText(movie.getResult().get(0).getActor());
-    }
 
     @Override
     public void onClick(View v) {
@@ -292,8 +388,13 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
                 intent = new Intent(getActivity(), WriteReviewActivity.class);
                 intent.putExtra("requestCode", REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT);
                 //영화 이름, 영화 아이디를 넘겨줌
-                intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_NAME, movie.getResult().get(0).getTitle());
+                if (movie == null) {
+                    intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_NAME, detailEntity.getTitle());
+                } else {
+                    intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_NAME, movie.getResult().get(0).getTitle());
+                }
                 intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_ID, mMovieIdParam);
+
                 startActivityForResult(intent, REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT);
                 break;
 
@@ -301,10 +402,15 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
                 customToast.makeText(getResources().getString(R.string.movie_detail_info_toast_review_all), Toast.LENGTH_SHORT);
                 intent = new Intent(getActivity(), SeeAllReviewActivity.class);
                 //영화 이름, 아이디, 별점을 넘겨줌
-                intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_NAME, movie.getResult().get(0).getTitle());
-                intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_ID, mMovieIdParam);
-                intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_RATE, movie.getResult().get(0).getUser_rating());
+                if (movie == null) {
+                    intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_NAME, detailEntity.getTitle());
+                    intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_RATE, detailEntity.getUser_rating());
+                } else {
+                    intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_NAME, movie.getResult().get(0).getTitle());
+                    intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_RATE, movie.getResult().get(0).getUser_rating());
+                }
 
+                intent.putExtra(FRAGMENT_INFO_DETAIL_MOVIE_ID, mMovieIdParam);
                 startActivityForResult(intent, REQUEST_CODE_OF_MOVIE_DETAIL_INFO_FRAGMENT);
                 break;
         }
@@ -368,6 +474,90 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
             }
         }
     };
+
+    private static class MovieDetailDaoAsyncTask extends AsyncTask<MovieDetailEntity, Void, List<MovieDetailEntity>> {
+
+        MovieDetailEntityDao detailEntityDao;
+        int command;
+
+        public MovieDetailDaoAsyncTask(MovieDetailEntityDao detailEntityDao, int command) {
+            this.detailEntityDao = detailEntityDao;
+            this.command = command;
+        }
+
+        @Override
+        protected List<MovieDetailEntity> doInBackground(MovieDetailEntity... movieDetailEntities) {
+
+            if (command == AppDataBase.ROOM_QUERY_GET_ALL) {
+                return detailEntityDao.getAll();
+
+            } else if (command == AppDataBase.ROOM_QUERY_INSERT) {
+
+                if (detailEntityDao.getAll().size() >= MoviePosterContainerFragment.NUM_OF_FRAGMENTS) {
+                    detailEntityDao.update(movieDetailEntities[0]);
+                } else {
+                    detailEntityDao.insert(movieDetailEntities[0]);
+                }
+
+            }
+            return null;
+        }
+    }
+
+    private static class CommendListDaoAsyncTask extends AsyncTask<CommentListEntity, Void, List<CommentListEntity>> {
+
+        CommentListEntityDao commentListEntityDao;
+        int command;
+        int movieId;
+
+        public CommendListDaoAsyncTask(CommentListEntityDao commentListEntityDao, int command, int movieId) {
+            this.commentListEntityDao = commentListEntityDao;
+            this.command = command;
+            this.movieId = movieId;
+        }
+
+        @Override
+        protected List<CommentListEntity> doInBackground(CommentListEntity... commentListEntities) {
+
+            if (command == AppDataBase.ROOM_QUERY_GET_ALL) {
+                return getCommentList();
+            } else if (command == AppDataBase.ROOM_QUERY_INSERT) {
+                commentListEntityDao.insert(commentListEntities[0]);
+            } else if (command == AppDataBase.ROOM_QUERY_DELETE) {
+                deleteCommentList();
+            }
+            return null;
+        }
+
+        private List<CommentListEntity> getCommentList() {
+            if (movieId == 1) {
+                return commentListEntityDao.getFirstLimitedMovieCommentCount();
+            } else if (movieId == 2) {
+                return commentListEntityDao.getSecondLimitedMovieCommentCount();
+            } else if (movieId == 3) {
+                return commentListEntityDao.getThirdLimitedMovieCommentCount();
+            } else if (movieId == 4) {
+                return commentListEntityDao.getForthLimitedMovieCommentCount();
+            } else if (movieId == 5) {
+                return commentListEntityDao.getFifthLimitedMovieCommentCount();
+            }
+            return null;
+        }
+
+        private void deleteCommentList() {
+            if (movieId == 1) {
+                commentListEntityDao.deleteFirstCommentList();
+            } else if (movieId == 2) {
+                commentListEntityDao.deleteSecondCommentList();
+            } else if (movieId == 3) {
+                commentListEntityDao.deleteThirdCommentList();
+            } else if (movieId == 4) {
+                commentListEntityDao.deleteFourthCommentList();
+            } else if (movieId == 5) {
+                commentListEntityDao.deleteFifthCommentList();
+            }
+        }
+    }
 
 
     //좋아요, 싫어요 인터페이스

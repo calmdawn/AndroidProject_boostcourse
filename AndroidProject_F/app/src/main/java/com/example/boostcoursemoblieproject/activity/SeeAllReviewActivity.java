@@ -1,10 +1,8 @@
 package com.example.boostcoursemoblieproject.activity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +11,10 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -26,7 +28,13 @@ import com.example.boostcoursemoblieproject.item.CommentList;
 import com.example.boostcoursemoblieproject.item.ResponseMovieInfo;
 import com.example.boostcoursemoblieproject.item.Users;
 import com.example.boostcoursemoblieproject.network.AppHelper;
+import com.example.boostcoursemoblieproject.network.NetworkState;
+import com.example.boostcoursemoblieproject.roomdb.AppDataBase;
+import com.example.boostcoursemoblieproject.roomdb.CommentListEntity;
+import com.example.boostcoursemoblieproject.roomdb.CommentListEntityDao;
 import com.google.gson.Gson;
+
+import java.util.List;
 
 public class SeeAllReviewActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -41,6 +49,8 @@ public class SeeAllReviewActivity extends AppCompatActivity implements View.OnCl
     private CommentList commentList;
 
     private TextView reviewPeopleTv;
+
+    private AppDataBase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +85,52 @@ public class SeeAllReviewActivity extends AppCompatActivity implements View.OnCl
         backImgBtn.setOnClickListener(this);
         writeBtn.setOnClickListener(this);
 
-        requestAllCommentList(movieId);
+        db = AppDataBase.getAppDataBase(this);
 
+        //인터넷 연결된 상태, 아닌 상태
+        if (NetworkState.status == NetworkState.TYPE_CONNECT) {
+            Toast.makeText(this, "인터넷 연결됨", Toast.LENGTH_SHORT).show();
+            requestAllCommentList(movieId);
+        } else if (NetworkState.status == NetworkState.TYPE_NOT_CONNECTED) {
+            Toast.makeText(this, "인터넷 연결안됨 DB에서 불러옴", Toast.LENGTH_SHORT).show();
+            try {
+                List<CommentListEntity> allCommentListEntities = new SeeAllCommentListDaoAsyncTask(db.commentListEntityDao(), AppDataBase.ROOM_QUERY_GET_ALL, movieId).execute().get();
+                setNotConnectedNetworkListViewAllCommentList(allCommentListEntities);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    }
+
+    private void setNotConnectedNetworkListViewAllCommentList(List<CommentListEntity> allCommentListEntities) {
+        for (int i = 0; i < allCommentListEntities.size(); i++) {
+            seeAllAdapter.addItem(new Users(allCommentListEntities.get(i).getWriter(),
+                    allCommentListEntities.get(i).getTime(),
+                    allCommentListEntities.get(i).getContents(), R.drawable.user1,
+                    allCommentListEntities.get(i).getRating()));
+        }
+        seeAllListView.setAdapter(seeAllAdapter);
+    }
+
+    private void setListViewAllCommentList() {
+
+        //기존의 DB값 제거
+        new SeeAllCommentListDaoAsyncTask(db.commentListEntityDao(), AppDataBase.ROOM_QUERY_DELETE, movieId).execute();
+
+        for (int i = 0; i < commentList.getResult().size(); i++) {
+            seeAllAdapter.addItem(new Users(commentList.getResult().get(i).getWriter(),
+                    commentList.getResult().get(i).getTime(), commentList.getResult().get(i).getContents(),
+                    R.drawable.user1, commentList.getResult().get(i).getRating()));
+
+            new SeeAllCommentListDaoAsyncTask(db.commentListEntityDao(), AppDataBase.ROOM_QUERY_INSERT, movieId).execute(new CommentListEntity(
+                    movieId, commentList.getResult().get(i).getWriter(), commentList.getResult().get(i).getWriter_image(), commentList.getResult().get(i).getTime(),
+                    commentList.getResult().get(i).getRating(), commentList.getResult().get(i).getContents()
+            ));
+
+        }
+        seeAllListView.setAdapter(seeAllAdapter);
     }
 
     private void requestAllCommentList(int movieId) {
@@ -109,12 +163,6 @@ public class SeeAllReviewActivity extends AppCompatActivity implements View.OnCl
 
     }
 
-    private void setListViewAllCommentList() {
-        for (int i = 0; i < commentList.getResult().size(); i++) {
-            seeAllAdapter.addItem(new Users(commentList.getResult().get(i).getWriter(), commentList.getResult().get(i).getTime(), commentList.getResult().get(i).getContents(), R.drawable.user1, commentList.getResult().get(i).getRating()));
-        }
-        seeAllListView.setAdapter(seeAllAdapter);
-    }
 
     public void processResponseConvertGson(String response) {
         Gson gson = new Gson();
@@ -185,4 +233,59 @@ public class SeeAllReviewActivity extends AppCompatActivity implements View.OnCl
         customActionBar.setCustomView(actionbarView);
     }
 
+    private static class SeeAllCommentListDaoAsyncTask extends AsyncTask<CommentListEntity, Void, List<CommentListEntity>> {
+
+        private CommentListEntityDao seeAllListEntityDao;
+        private int command;
+        private int movieId;
+
+        public SeeAllCommentListDaoAsyncTask(CommentListEntityDao commentListEntityDao, int command, int movieId) {
+            this.seeAllListEntityDao = commentListEntityDao;
+            this.command = command;
+            this.movieId = movieId;
+        }
+
+        @Override
+        protected List<CommentListEntity> doInBackground(CommentListEntity... commentListEntities) {
+
+            if (command == AppDataBase.ROOM_QUERY_GET_ALL) {
+                return getCommentList();
+            } else if (command == AppDataBase.ROOM_QUERY_INSERT) {
+                seeAllListEntityDao.insert(commentListEntities[0]);
+            } else if (command == AppDataBase.ROOM_QUERY_DELETE) {
+                deleteCommentList();
+            }
+            return null;
+        }
+
+        private List<CommentListEntity> getCommentList() {
+            if (movieId == 1) {
+                return seeAllListEntityDao.getFirstSeeAllMovieCommentCount();
+            } else if (movieId == 2) {
+                return seeAllListEntityDao.getSecondSeeAllMovieCommentCount();
+            } else if (movieId == 3) {
+                return seeAllListEntityDao.getThirdSeeAllMovieCommentCount();
+            } else if (movieId == 4) {
+                return seeAllListEntityDao.getForthSeeAllMovieCommentCount();
+            } else if (movieId == 5) {
+                return seeAllListEntityDao.getFifthSeeAllMovieCommentCount();
+            }
+            return null;
+        }
+
+        private void deleteCommentList() {
+            if (movieId == 1) {
+                seeAllListEntityDao.deleteFirstCommentList();
+            } else if (movieId == 2) {
+                seeAllListEntityDao.deleteSecondCommentList();
+            } else if (movieId == 3) {
+                seeAllListEntityDao.deleteThirdCommentList();
+            } else if (movieId == 4) {
+                seeAllListEntityDao.deleteFourthCommentList();
+            } else if (movieId == 5) {
+                seeAllListEntityDao.deleteFifthCommentList();
+            }
+        }
+
+    }
 }
