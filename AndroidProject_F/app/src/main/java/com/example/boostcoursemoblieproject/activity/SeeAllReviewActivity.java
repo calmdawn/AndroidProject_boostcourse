@@ -233,6 +233,7 @@ public class SeeAllReviewActivity extends AppCompatActivity implements View.OnCl
         customActionBar.setCustomView(actionbarView);
     }
 
+    //    백그라운드 DB조작을 위한 AsyncTask
     private static class SeeAllCommentListDaoAsyncTask extends AsyncTask<CommentListEntity, Void, List<CommentListEntity>> {
 
         private CommentListEntityDao seeAllListEntityDao;

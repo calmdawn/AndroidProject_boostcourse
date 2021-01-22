@@ -196,6 +196,7 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
         } else if (NetworkState.status == NetworkState.TYPE_NOT_CONNECTED) {
             Toast.makeText(getActivity(), "인터넷 연결안됨 DB에서 불러옴", Toast.LENGTH_SHORT).show();
             try {
+                //상세정보 가져오기
                 List<MovieDetailEntity> movieDetailEntities = new MovieDetailDaoAsyncTask(db.movieDetailEntityDao(), AppDataBase.ROOM_QUERY_GET_ALL).execute().get();
                 for (int i = 0; i < movieDetailEntities.size(); i++) {
                     if (mMovieIdParam == movieDetailEntities.get(i).getMovieId()) {
@@ -203,7 +204,7 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
                         setNotConnectedNetworkMovieDetailInfo(detailEntity);
                     }
                 }
-
+                //한줄평 가져오기
                 List<CommentListEntity> commentListEntities = new CommendListDaoAsyncTask(db.commentListEntityDao(), AppDataBase.ROOM_QUERY_GET_ALL, mMovieIdParam).execute().get();
                 setNotConnectedNetworkListViewCommentList(commentListEntities);
 
@@ -216,85 +217,7 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
         return rootView;
     }
 
-    private void setNotConnectedNetworkListViewCommentList(List<CommentListEntity> commentListEntities) {
-        adapter.getReviewItems().clear();
-        for (int i = 0; i < commentListEntities.size(); i++) {
-            adapter.addItem(new Users(commentListEntities.get(i).getWriter(),
-                    commentListEntities.get(i).getTime(), commentListEntities.get(i).getContents(),
-                    R.drawable.user1, commentListEntities.get(i).getRating()));
-        }
-        listView.setAdapter(adapter);
-    }
-
-
-    //MAX_COMMENT_LIST_DETAIL_INFO_FRAGMENT에 설정한 한줄평 최대값만큼만을 보여줌
-    private void setListViewCommentList() {
-
-        //서버에서 불러와 값 설정 후 DB에 저장
-        for (int i = 0; i < commentList.getResult().size(); i++) {
-            adapter.addItem(new Users(commentList.getResult().get(i).getWriter(),
-                    commentList.getResult().get(i).getTime(), commentList.getResult().get(i).getContents(),
-                    R.drawable.user1, commentList.getResult().get(i).getRating()));
-
-            Toast.makeText(getActivity(), "코멘트 DB " + i + "번째 인서트 성공이여", Toast.LENGTH_SHORT).show();
-
-            new CommendListDaoAsyncTask(db.commentListEntityDao(), AppDataBase.ROOM_QUERY_INSERT, mMovieIdParam).execute(new CommentListEntity(
-                    mMovieIdParam, commentList.getResult().get(i).getWriter(), commentList.getResult().get(i).getWriter_image(),
-                    commentList.getResult().get(i).getTime(), commentList.getResult().get(i).getRating(), commentList.getResult().get(i).getContents()));
-        }
-        listView.setAdapter(adapter);
-
-    }
-
-
-    private void setNotConnectedNetworkMovieDetailInfo(MovieDetailEntity movieDetailEntity) {
-        Glide.with(getActivity()).load(movieDetailEntity.getImage()).into(detailPosterIv);
-        detailMovieNameTv.setText(movieDetailEntity.getTitle());
-        detailMovieDateTv.setText(movieDetailEntity.getDate() + " 개봉");
-        detailMovieCategoryTv.setText(movieDetailEntity.getGenre() + " / " + movieDetailEntity.getDuration() + "분");
-        thumbUpTextView.setText(String.valueOf(movieDetailEntity.getLike()));
-        thumbDownTextView.setText(String.valueOf(movieDetailEntity.getDislike()));
-
-        detailMovieReservationTv.setText(movieDetailEntity.getReservation_grade() + "위" + " " + movieDetailEntity.getReservation_rate() + "%");
-        detailMovieUserRateTv.setText(String.valueOf(movieDetailEntity.getUser_rating()));
-        detailMovieUserRatingbar.setRating(movieDetailEntity.getUser_rating());
-        detailMovieAudienceTv.setText(movieDetailEntity.getAudience() + "명");
-
-        detailMovieSynopsisTv.setText(movieDetailEntity.getSynopsis());
-        detailMovieDirectorTv.setText(movieDetailEntity.getDirector());
-        detailMovieActorTv.setText(movieDetailEntity.getActor());
-    }
-
-    private void setMovieDetailInfo() {
-        Glide.with(getActivity()).load(movie.getResult().get(0).getImage()).into(detailPosterIv);
-        detailMovieNameTv.setText(movie.getResult().get(0).getTitle());
-        detailMovieDateTv.setText(movie.getResult().get(0).getDate() + " 개봉");
-        detailMovieCategoryTv.setText(movie.getResult().get(0).getGenre() + " / " + movie.getResult().get(0).getDuration() + "분");
-        thumbUpTextView.setText(String.valueOf(movie.getResult().get(0).getLike()));
-        thumbDownTextView.setText(String.valueOf(movie.getResult().get(0).getDislike()));
-
-        detailMovieReservationTv.setText(movie.getResult().get(0).getReservation_grade() + "위" + " " + movie.getResult().get(0).getReservation_rate() + "%");
-        detailMovieUserRateTv.setText(String.valueOf(movie.getResult().get(0).getUser_rating()));
-        detailMovieUserRatingbar.setRating(movie.getResult().get(0).getUser_rating());
-        detailMovieAudienceTv.setText(movie.getResult().get(0).getAudience() + "명");
-
-        detailMovieSynopsisTv.setText(movie.getResult().get(0).getSynopsis());
-        detailMovieDirectorTv.setText(movie.getResult().get(0).getDirector());
-        detailMovieActorTv.setText(movie.getResult().get(0).getActor());
-
-        Toast.makeText(getActivity(), "디테일 DB 인서트 성공이여", Toast.LENGTH_SHORT).show();
-
-        new MovieDetailDaoAsyncTask(db.movieDetailEntityDao(), AppDataBase.ROOM_QUERY_INSERT).execute(new MovieDetailEntity(mMovieIdParam,
-                movie.getResult().get(0).getTitle(), movie.getResult().get(0).getDate(),
-                movie.getResult().get(0).getUser_rating(), movie.getResult().get(0).getAudience_rating(),
-                movie.getResult().get(0).getReservation_rate(), movie.getResult().get(0).getGrade(),
-                movie.getResult().get(0).getImage(), movie.getResult().get(0).getGenre(), movie.getResult().get(0).getDuration(),
-                movie.getResult().get(0).getAudience(), movie.getResult().get(0).getSynopsis(), movie.getResult().get(0).getDirector(),
-                movie.getResult().get(0).getActor(), movie.getResult().get(0).getLike(), movie.getResult().get(0).getDislike()
-        ));
-
-    }
-
+    //영화 세부정보 처리
 
     private void requestMovie(int requestCount) {
         String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovie";
@@ -316,7 +239,6 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(getActivity(), "응답에러" + error, Toast.LENGTH_SHORT).show();
                         if (requestCount > 0) {
-                            Toast.makeText(getActivity(), "응답에러영화카운트" + requestCount, Toast.LENGTH_SHORT).show();
                             requestMovie((requestCount - 1));
                         }
 
@@ -328,6 +250,58 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
         AppHelper.requestQueue.add(request);
     }
 
+
+    private void setMovieDetailInfo() {
+        Glide.with(getActivity()).load(movie.getResult().get(0).getImage()).into(detailPosterIv);
+        detailMovieNameTv.setText(movie.getResult().get(0).getTitle());
+        detailMovieDateTv.setText(movie.getResult().get(0).getDate() + " 개봉");
+        detailMovieCategoryTv.setText(movie.getResult().get(0).getGenre() + " / " + movie.getResult().get(0).getDuration() + "분");
+        thumbUpTextView.setText(String.valueOf(movie.getResult().get(0).getLike()));
+        thumbDownTextView.setText(String.valueOf(movie.getResult().get(0).getDislike()));
+
+        detailMovieReservationTv.setText(movie.getResult().get(0).getReservation_grade() + "위" + " " + movie.getResult().get(0).getReservation_rate() + "%");
+        detailMovieUserRateTv.setText(String.valueOf(movie.getResult().get(0).getUser_rating()));
+        detailMovieUserRatingbar.setRating(movie.getResult().get(0).getUser_rating());
+        detailMovieAudienceTv.setText(movie.getResult().get(0).getAudience() + "명");
+
+        detailMovieSynopsisTv.setText(movie.getResult().get(0).getSynopsis());
+        detailMovieDirectorTv.setText(movie.getResult().get(0).getDirector());
+        detailMovieActorTv.setText(movie.getResult().get(0).getActor());
+
+
+        //서버에서 불러와 값 설정 후 DB에 저장
+        new MovieDetailDaoAsyncTask(db.movieDetailEntityDao(), AppDataBase.ROOM_QUERY_INSERT).execute(new MovieDetailEntity(mMovieIdParam,
+                movie.getResult().get(0).getTitle(), movie.getResult().get(0).getDate(),
+                movie.getResult().get(0).getUser_rating(), movie.getResult().get(0).getAudience_rating(),
+                movie.getResult().get(0).getReservation_rate(), movie.getResult().get(0).getGrade(),
+                movie.getResult().get(0).getImage(), movie.getResult().get(0).getGenre(), movie.getResult().get(0).getDuration(),
+                movie.getResult().get(0).getAudience(), movie.getResult().get(0).getSynopsis(), movie.getResult().get(0).getDirector(),
+                movie.getResult().get(0).getActor(), movie.getResult().get(0).getLike(), movie.getResult().get(0).getDislike()
+        ));
+
+    }
+
+
+    private void setNotConnectedNetworkMovieDetailInfo(MovieDetailEntity movieDetailEntity) {
+        Glide.with(getActivity()).load(movieDetailEntity.getImage()).into(detailPosterIv);
+
+        detailMovieNameTv.setText(movieDetailEntity.getTitle());
+        detailMovieDateTv.setText(movieDetailEntity.getDate() + " 개봉");
+        detailMovieCategoryTv.setText(movieDetailEntity.getGenre() + " / " + movieDetailEntity.getDuration() + "분");
+        thumbUpTextView.setText(String.valueOf(movieDetailEntity.getLike()));
+        thumbDownTextView.setText(String.valueOf(movieDetailEntity.getDislike()));
+
+        detailMovieReservationTv.setText(movieDetailEntity.getReservation_grade() + "위" + " " + movieDetailEntity.getReservation_rate() + "%");
+        detailMovieUserRateTv.setText(String.valueOf(movieDetailEntity.getUser_rating()));
+        detailMovieUserRatingbar.setRating(movieDetailEntity.getUser_rating());
+        detailMovieAudienceTv.setText(movieDetailEntity.getAudience() + "명");
+
+        detailMovieSynopsisTv.setText(movieDetailEntity.getSynopsis());
+        detailMovieDirectorTv.setText(movieDetailEntity.getDirector());
+        detailMovieActorTv.setText(movieDetailEntity.getActor());
+    }
+
+    //영화 한줄평 정보 처리
     private void requestCommentList(int requestCount) {
         String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readCommentList";
         url += "?" + "id=" + mMovieIdParam + "&" + "limit=" + MAX_COMMENT_LIST_DETAIL_INFO_FRAGMENT;
@@ -350,7 +324,6 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(getActivity(), "응답에러" + error, Toast.LENGTH_SHORT).show();
                         if (requestCount > 0) {
-                            Toast.makeText(getActivity(), "응답에러코멘트카운트" + requestCount, Toast.LENGTH_SHORT).show();
                             requestCommentList((requestCount - 1));
                         }
 
@@ -360,6 +333,34 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
 
         request.setShouldCache(false);
         AppHelper.requestQueue.add(request);
+    }
+
+
+    //MAX_COMMENT_LIST_DETAIL_INFO_FRAGMENT에 설정한 한줄평 최대값만큼만을 보여줌
+    private void setListViewCommentList() {
+
+        //서버에서 불러와 값 설정 후 DB에 저장
+        for (int i = 0; i < commentList.getResult().size(); i++) {
+            adapter.addItem(new Users(commentList.getResult().get(i).getWriter(),
+                    commentList.getResult().get(i).getTime(), commentList.getResult().get(i).getContents(),
+                    R.drawable.user1, commentList.getResult().get(i).getRating()));
+
+            new CommendListDaoAsyncTask(db.commentListEntityDao(), AppDataBase.ROOM_QUERY_INSERT, mMovieIdParam).execute(new CommentListEntity(
+                    mMovieIdParam, commentList.getResult().get(i).getWriter(), commentList.getResult().get(i).getWriter_image(),
+                    commentList.getResult().get(i).getTime(), commentList.getResult().get(i).getRating(), commentList.getResult().get(i).getContents()));
+        }
+        listView.setAdapter(adapter);
+
+    }
+
+    private void setNotConnectedNetworkListViewCommentList(List<CommentListEntity> commentListEntities) {
+        adapter.getReviewItems().clear();
+        for (int i = 0; i < commentListEntities.size(); i++) {
+            adapter.addItem(new Users(commentListEntities.get(i).getWriter(),
+                    commentListEntities.get(i).getTime(), commentListEntities.get(i).getContents(),
+                    R.drawable.user1, commentListEntities.get(i).getRating()));
+        }
+        listView.setAdapter(adapter);
     }
 
 
@@ -475,6 +476,7 @@ public class MovieDetailInfoFragment extends Fragment implements View.OnClickLis
         }
     };
 
+    //    백그라운드 DB조작을 위한 AsyncTask
     private static class MovieDetailDaoAsyncTask extends AsyncTask<MovieDetailEntity, Void, List<MovieDetailEntity>> {
 
         MovieDetailEntityDao detailEntityDao;

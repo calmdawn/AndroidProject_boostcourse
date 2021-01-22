@@ -11,7 +11,9 @@ import androidx.room.RoomDatabase;
 public abstract class AppDataBase extends RoomDatabase {
 
     public abstract MoviePosterEntityDao moviePosterEntityDao();
+
     public abstract MovieDetailEntityDao movieDetailEntityDao();
+
     public abstract CommentListEntityDao commentListEntityDao();
 
     public static final int ROOM_QUERY_GET_ALL = 100;
