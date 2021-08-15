@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.calmdawn.boostcoursemobileproject">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/app_ic_main_icon"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/app_ic_main_icon"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.BoostcourseMobileProject"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".ui.activity.SeeAllCommentActivity"></activity>
+        <activity android:name=".ui.activity.WriteCommentActivity" />
+        <activity
+            android:name=".ui.activity.MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.BoostcourseMobileProject.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

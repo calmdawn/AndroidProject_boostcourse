@@ -1,0 +1,59 @@
+<resources>
+    <string name="app_name">씨네마천국</string>
+
+    <!--    common-->
+    <string name="custom_action_bar_title">타이틀</string>
+    <string name="common_layout_item_comment_writer">사용자이름</string>
+    <string name="common_layout_item_comment_date">2021–01–01</string>
+    <string name="common_layout_item_comment_comments">한줄평 내용</string>
+    <string name="common_layout_item_comment_recommend">추천 0  |</string>
+    <string name="common_layout_item_comment_report">신고하기</string>
+
+    <!--    MainActivity   -->
+    <string name="menu_movie_list">영화 목록</string>
+    <string name="menu_movie_api">영화 API</string>
+    <string name="menu_movie_reserve">예매하기</string>
+    <string name="menu_settings">설정</string>
+    <string name="menu_user_settings">사용자 설정</string>
+
+    <string name="nav_header_title">CalmDawn</string>
+    <string name="nav_header_subtitle">https://github.com/calmdawn</string>
+
+
+    <!--    MoviePosterFragment-->
+    <string name="movie_poster_title">영화 제목</string>
+    <string name="movie_poster_info">예매율 0.0% | 12세 관람가 | D-0</string>
+    <string name="movie_poster_detail_view">상세 보기</string>
+
+    <!--    MovieDetailInfoFragment-->
+    <string name="movie_detail_info_title">영화 제목</string>
+    <string name="movie_detail_info_date">2021–01–01 개봉</string>
+    <string name="movie_detail_info_category">장르 / 상영시간</string>
+    <string name="movie_detail_info_reservation_title">예매율</string>
+    <string name="movie_detail_info_reservation_value">1위 0.0%</string>
+    <string name="movie_detail_info_user_rate_title">평점</string>
+    <string name="movie_detail_info_user_rate_value">0.0</string>
+    <string name="movie_detail_info_audience_title">누적관객수</string>
+    <string name="movie_detail_info_audience_value">0명</string>
+    <string name="movie_detail_info_synopsis_title">줄거리</string>
+    <string name="movie_detail_info_synopsis_value">줄거리 내용</string>
+    <string name="movie_detail_info_produce_title">감독/출연</string>
+    <string name="movie_detail_info_director_title">감독</string>
+    <string name="movie_detail_info_director_value">CalmDawn</string>
+    <string name="movie_detail_info_actor_title">출연</string>
+    <string name="movie_detail_info_actor_value">CalmDawn</string>
+    <string name="movie_detail_info_comment_title">한줄평</string>
+    <string name="movie_detail_info_write_comment">작성하기</string>
+    <string name="movie_detail_info_view_all">모두보기</string>
+    <string name="movie_detail_info_reserve">예매하기</string>
+
+
+
+
+
+    <!--    Intent Key-->
+    <string name="movie_name">movieName</string>
+    <string name="movie_id">movieId</string>
+
+
+</resources>

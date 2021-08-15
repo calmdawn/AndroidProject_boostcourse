@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/padding_small_8dp"
+        android:paddingBottom="@dimen/padding_small_8dp">
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/common_layout_item_comment_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/common_img_user"
+            app:civ_border_color="@color/gray_EAEAEA"
+            app:civ_border_width="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/common_layout_item_comment_writer_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_medium_16dp"
+            android:text="@string/common_layout_item_comment_writer"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textsize_small_12dp"
+            app:layout_constraintStart_toEndOf="@+id/common_layout_item_comment_iv"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/common_layout_item_comment_date_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small_8dp"
+            android:text="@string/common_layout_item_comment_date"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textsize_small_12dp"
+            app:layout_constraintStart_toStartOf="@+id/common_layout_item_comment_writer_tv"
+            app:layout_constraintTop_toBottomOf="@+id/common_layout_item_comment_writer_tv" />
+
+        <androidx.appcompat.widget.AppCompatRatingBar
+            android:id="@+id/common_layout_item_comment_ratingbar"
+            style="@style/Widget.AppCompat.RatingBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_small_8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/common_layout_item_comment_date_tv"
+            app:layout_constraintStart_toEndOf="@+id/common_layout_item_comment_date_tv"
+            app:layout_constraintTop_toTopOf="@+id/common_layout_item_comment_date_tv" />
+
+        <TextView
+            android:id="@+id/common_layout_item_comments_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small_8dp"
+            android:text="@string/common_layout_item_comment_comments"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textsize_medium_14dp"
+            app:layout_constraintStart_toStartOf="@+id/common_layout_item_comment_date_tv"
+            app:layout_constraintTop_toBottomOf="@+id/common_layout_item_comment_date_tv" />
+
+        <TextView
+            android:id="@+id/common_layout_item_comment_recommend_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small_8dp"
+            android:text="@string/common_layout_item_comment_recommend"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textsize_small_12dp"
+            app:layout_constraintStart_toStartOf="@+id/common_layout_item_comments_tv"
+            app:layout_constraintTop_toBottomOf="@+id/common_layout_item_comments_tv" />
+
+        <TextView
+            android:id="@+id/common_layout_item_comment_report_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_small_8dp"
+            android:text="@string/common_layout_item_comment_report"
+            android:textSize="@dimen/textsize_small_12dp"
+            app:layout_constraintBottom_toBottomOf="@+id/common_layout_item_comment_recommend_tv"
+            app:layout_constraintStart_toEndOf="@+id/common_layout_item_comment_recommend_tv"
+            app:layout_constraintTop_toTopOf="@+id/common_layout_item_comment_recommend_tv" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
