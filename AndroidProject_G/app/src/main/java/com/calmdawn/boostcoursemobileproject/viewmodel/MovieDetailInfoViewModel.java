@@ -15,10 +15,14 @@ import com.calmdawn.boostcoursemobileproject.db.entity.MovieCommentEntity;
 import com.calmdawn.boostcoursemobileproject.db.entity.MovieDetailInfoEntity;
 import com.calmdawn.boostcoursemobileproject.model.MovieCommentListItem;
 import com.calmdawn.boostcoursemobileproject.model.MovieDetailInfoItem;
+import com.calmdawn.boostcoursemobileproject.model.MovieGalleryItem;
 import com.calmdawn.boostcoursemobileproject.network.NetworkManager;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.StringTokenizer;
 
 public class MovieDetailInfoViewModel extends ViewModel {
 
@@ -27,6 +31,8 @@ public class MovieDetailInfoViewModel extends ViewModel {
 
     MutableLiveData<MovieDetailInfoItem> detailInfoLiveData = new MutableLiveData<>();
     MutableLiveData<MovieCommentListItem> commentListLiveData = new MutableLiveData<>();
+    MutableLiveData<List<MovieGalleryItem>> galleryItemsLiveData = new MutableLiveData<>();
+
     CustomAsyncTask customAsyncTask = new CustomAsyncTask();
 
     public MutableLiveData<MovieDetailInfoItem> getDetailInfoLiveData() {
@@ -35,6 +41,10 @@ public class MovieDetailInfoViewModel extends ViewModel {
 
     public MutableLiveData<MovieCommentListItem> getCommentListLiveData() {
         return commentListLiveData;
+    }
+
+    public MutableLiveData<List<MovieGalleryItem>> getGalleryItemsLiveData() {
+        return galleryItemsLiveData;
     }
 
     public void requestMovieDetailInfo(Context context, int movieId) {
@@ -81,6 +91,7 @@ public class MovieDetailInfoViewModel extends ViewModel {
 
         if (movieDetailInfoItem.getCode() == 200) {
             detailInfoLiveData.setValue(movieDetailInfoItem);
+            galleryItemsLiveData.setValue(getMovieGalleryItems(movieDetailInfoItem));
             saveMovieDetailInfoRoomDB(movieDetailInfoItem.getResult().get(0), context);
         }
     }
@@ -115,6 +126,7 @@ public class MovieDetailInfoViewModel extends ViewModel {
             @Override
             public void postExecute() {
                 detailInfoLiveData.setValue(detailInfoItem);
+                galleryItemsLiveData.setValue(getMovieGalleryItems(detailInfoItem));
             }
         });
     }
@@ -122,7 +134,6 @@ public class MovieDetailInfoViewModel extends ViewModel {
     private void responseConvertMovieCommentListToGson(String response, Context context) {
         Gson gson = new Gson();
         MovieCommentListItem movieCommentListItem = gson.fromJson(response, MovieCommentListItem.class);
-
         if (movieCommentListItem.getCode() == 200) {
             commentListLiveData.setValue(movieCommentListItem);
             saveMovieCommentListRoomDB(movieCommentListItem.getResult(), context);
@@ -158,7 +169,6 @@ public class MovieDetailInfoViewModel extends ViewModel {
         });
     }
 
-
     public int getGradeImg(Integer grade) {
         if (grade == 12) {
             return R.drawable.common_ic_grade_12;
@@ -170,4 +180,30 @@ public class MovieDetailInfoViewModel extends ViewModel {
             return 0;
         }
     }
+
+    private List<MovieGalleryItem> getMovieGalleryItems(MovieDetailInfoItem movieDetailInfoItem) {
+        List<MovieGalleryItem> galleryItems = new ArrayList<>();
+
+        if (!movieDetailInfoItem.getResult().isEmpty()) {
+            StringTokenizer st;
+
+            if (movieDetailInfoItem.getResult().get(0).getPhotos() != null) {
+                st = new StringTokenizer(movieDetailInfoItem.getResult().get(0).getPhotos(), ",");  //영화 이미지 url 넣기
+                while (st.hasMoreTokens()) {
+                    galleryItems.add(new MovieGalleryItem(st.nextToken(), 1));
+                }
+            }
+
+            if (movieDetailInfoItem.getResult().get(0).getVideos() != null) {
+                st = new StringTokenizer(movieDetailInfoItem.getResult().get(0).getVideos(), ",");  //영화 동영상 url 넣기
+                while (st.hasMoreTokens()) {
+                    galleryItems.add(new MovieGalleryItem(st.nextToken(), 2));
+                }
+            }
+
+        }
+
+        return galleryItems;
+    }
+
 }

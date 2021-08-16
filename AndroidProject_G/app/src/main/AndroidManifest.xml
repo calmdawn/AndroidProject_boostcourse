@@ -13,7 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BoostcourseMobileProject"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.activity.SeeAllCommentActivity"></activity>
+        <activity android:name=".ui.activity.MoviePhotoActivity"></activity>
+        <activity android:name=".ui.activity.SeeAllCommentActivity" />
         <activity android:name=".ui.activity.WriteCommentActivity" />
         <activity
             android:name=".ui.activity.MainActivity"

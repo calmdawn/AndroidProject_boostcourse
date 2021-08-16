@@ -23,11 +23,13 @@
 
                 <ImageView
                     android:id="@+id/fragment_movie_detail_info_poster_iv"
-                    android:layout_width="140dp"
-                    android:layout_height="200dp"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="1:1.4"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.36" />
 
                 <TextView
                     android:id="@+id/fragment_movie_detail_info_title_tv"
@@ -37,7 +39,7 @@
                     android:layout_marginTop="@dimen/margin_medium_16dp"
                     android:text="@string/movie_detail_info_title"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/textsize_title_24dp"
+                    android:textSize="@dimen/textsize_sub_title_20dp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@+id/fragment_movie_detail_info_poster_iv"
                     app:layout_constraintTop_toTopOf="@+id/fragment_movie_detail_info_poster_iv" />
@@ -46,7 +48,7 @@
                     android:id="@+id/fragment_movie_detail_info_age_iv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_medium_16dp"
+                    android:layout_marginStart="@dimen/margin_small_8dp"
                     app:layout_constraintBottom_toBottomOf="@+id/fragment_movie_detail_info_title_tv"
                     app:layout_constraintStart_toEndOf="@+id/fragment_movie_detail_info_title_tv"
                     app:layout_constraintTop_toTopOf="@+id/fragment_movie_detail_info_title_tv"
@@ -290,9 +292,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/movie_detail_info_produce_title"
-                    android:textStyle="bold"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textsize_sub_title_20dp"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -300,8 +302,8 @@
                     android:id="@+id/fragment_movie_detail_info_director_title_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/movie_detail_info_director_title"
                     android:layout_marginTop="@dimen/margin_small_8dp"
+                    android:text="@string/movie_detail_info_director_title"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textsize_large_16dp"
                     app:layout_constraintStart_toStartOf="@+id/fragment_movie_detail_info_produce_title_tv"
@@ -323,8 +325,8 @@
                     android:id="@+id/fragment_movie_detail_info_actor_title_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/movie_detail_info_actor_title"
                     android:layout_marginTop="@dimen/margin_small_8dp"
+                    android:text="@string/movie_detail_info_actor_title"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textsize_large_16dp"
                     app:layout_constraintStart_toStartOf="@+id/fragment_movie_detail_info_director_title_tv"
@@ -344,6 +346,33 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_medium_16dp"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/padding_medium_16dp"
+                android:paddingBottom="@dimen/padding_medium_16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_medium_16dp"
+                    android:text="@string/movie_detail_info_gallery_title"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textsize_sub_title_20dp"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/fragment_movie_detail_info_gallery_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_medium_16dp"
+                    android:layout_marginEnd="@dimen/margin_medium_16dp" />
+
+            </LinearLayout>
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -356,9 +385,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/movie_detail_info_comment_title"
-                    android:textStyle="bold"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textsize_sub_title_20dp"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

@@ -42,13 +42,11 @@
     <string name="movie_detail_info_director_value">CalmDawn</string>
     <string name="movie_detail_info_actor_title">출연</string>
     <string name="movie_detail_info_actor_value">CalmDawn</string>
+    <string name="movie_detail_info_gallery_title">갤러리</string>
     <string name="movie_detail_info_comment_title">한줄평</string>
     <string name="movie_detail_info_write_comment">작성하기</string>
     <string name="movie_detail_info_view_all">모두보기</string>
     <string name="movie_detail_info_reserve">예매하기</string>
-
-
-
 
 
     <!--    Intent Key-->

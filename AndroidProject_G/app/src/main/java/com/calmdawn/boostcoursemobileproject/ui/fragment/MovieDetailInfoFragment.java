@@ -21,15 +21,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bumptech.glide.Glide;
 import com.calmdawn.boostcoursemobileproject.R;
 import com.calmdawn.boostcoursemobileproject.adapter.CommentRecyclerAdapter;
+import com.calmdawn.boostcoursemobileproject.adapter.MovieDetailInfoGalleryRecyclerAdapter;
 import com.calmdawn.boostcoursemobileproject.common.CustomToast;
 import com.calmdawn.boostcoursemobileproject.databinding.FragmentMovieDetailInfoBinding;
 import com.calmdawn.boostcoursemobileproject.model.MovieCommentListItem;
 import com.calmdawn.boostcoursemobileproject.model.MovieDetailInfoItem;
+import com.calmdawn.boostcoursemobileproject.model.MovieGalleryItem;
 import com.calmdawn.boostcoursemobileproject.network.NetworkState;
 import com.calmdawn.boostcoursemobileproject.ui.activity.MainActivity;
 import com.calmdawn.boostcoursemobileproject.ui.activity.SeeAllCommentActivity;
 import com.calmdawn.boostcoursemobileproject.ui.activity.WriteCommentActivity;
 import com.calmdawn.boostcoursemobileproject.viewmodel.MovieDetailInfoViewModel;
+
+import java.util.List;
 
 public class MovieDetailInfoFragment extends BaseFragment implements View.OnClickListener {
 
@@ -86,11 +90,17 @@ public class MovieDetailInfoFragment extends BaseFragment implements View.OnClic
     public void onViewCreated(@NonNull View rootView, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(rootView, savedInstanceState);
 
-        CommentRecyclerAdapter adapter = new CommentRecyclerAdapter(context);
+        CommentRecyclerAdapter commentRecyclerAdapter = new CommentRecyclerAdapter(context);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         detailInfoBinding.fragmentMovieDetailInfoCommentsRecycler.setLayoutManager(linearLayoutManager);
         detailInfoBinding.fragmentMovieDetailInfoCommentsRecycler.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
-        detailInfoBinding.fragmentMovieDetailInfoCommentsRecycler.setAdapter(adapter);
+        detailInfoBinding.fragmentMovieDetailInfoCommentsRecycler.setAdapter(commentRecyclerAdapter);
+
+        MovieDetailInfoGalleryRecyclerAdapter galleryRecyclerAdapter = new MovieDetailInfoGalleryRecyclerAdapter(context);
+        LinearLayoutManager galleryLinearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        detailInfoBinding.fragmentMovieDetailInfoGalleryRecycler.setLayoutManager(galleryLinearLayoutManager);
+        detailInfoBinding.fragmentMovieDetailInfoGalleryRecycler.setAdapter(galleryRecyclerAdapter);
+
 
         detailInfoBinding.fragmentMovieDetailInfoThumbUpIv.setOnClickListener(thumbOnClickListener);
         detailInfoBinding.fragmentMovieDetailInfoThumbDownIv.setOnClickListener(thumbOnClickListener);
@@ -135,8 +145,16 @@ public class MovieDetailInfoFragment extends BaseFragment implements View.OnClic
         detailInfoViewModel.getCommentListLiveData().observe(getViewLifecycleOwner(), new Observer<MovieCommentListItem>() {
             @Override
             public void onChanged(MovieCommentListItem movieCommentListItem) {
-                adapter.setItem(movieCommentListItem);
-                adapter.notifyDataSetChanged();
+                commentRecyclerAdapter.setItem(movieCommentListItem);
+                commentRecyclerAdapter.notifyDataSetChanged();
+            }
+        });
+
+        detailInfoViewModel.getGalleryItemsLiveData().observe(getViewLifecycleOwner(), new Observer<List<MovieGalleryItem>>() {
+            @Override
+            public void onChanged(List<MovieGalleryItem> movieGalleryItems) {
+                galleryRecyclerAdapter.setItem(movieGalleryItems);
+                galleryRecyclerAdapter.notifyDataSetChanged();
             }
         });
 
