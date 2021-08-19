@@ -72,8 +72,12 @@ public class WriteCommentActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void sendMovieComment() {
-        if (NetworkState.getConnectivityStatus(this)) {
 
+        if (!NetworkState.getConnectivityStatus(this)) {
+            Toast.makeText(this, "인터넷 연결상태를 확인해주세요", Toast.LENGTH_SHORT).show();
+        } else if (writeCommentBinding.activityWriteCommentEdittv.getText().toString().length() <= 0) {
+            Toast.makeText(this, "내용을 입력해주세요", Toast.LENGTH_SHORT).show();
+        } else {
             Map<String, String> params = new HashMap<>();
             params.put("id", String.valueOf(movieId));
             params.put("writer", "CalmDawn");
@@ -82,8 +86,6 @@ public class WriteCommentActivity extends AppCompatActivity implements View.OnCl
             params.put("contents", writeCommentBinding.activityWriteCommentEdittv.getText().toString());
             writeCommentViewModel.sendMovieComment(this, movieId, params);
             finish();
-        } else {
-            Toast.makeText(this, "인터넷 연결상태를 확인해주세요", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -2,6 +2,7 @@ package com.calmdawn.boostcoursemobileproject.viewmodel;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.EditText;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -28,15 +29,14 @@ public class MovieDetailInfoViewModel extends ViewModel {
 
     private final int MAX_COMMENT_LIST = 3;
 
-
-    MutableLiveData<MovieDetailInfoItem> detailInfoLiveData = new MutableLiveData<>();
+    MutableLiveData<MovieDetailInfoEntity> detailInfoEntityLiveData = new MutableLiveData<>();
     MutableLiveData<MovieCommentListItem> commentListLiveData = new MutableLiveData<>();
     MutableLiveData<List<MovieGalleryItem>> galleryItemsLiveData = new MutableLiveData<>();
 
     CustomAsyncTask customAsyncTask = new CustomAsyncTask();
 
-    public MutableLiveData<MovieDetailInfoItem> getDetailInfoLiveData() {
-        return detailInfoLiveData;
+    public MutableLiveData<MovieDetailInfoEntity> getDetailInfoEntityLiveData() {
+        return detailInfoEntityLiveData;
     }
 
     public MutableLiveData<MovieCommentListItem> getCommentListLiveData() {
@@ -90,11 +90,14 @@ public class MovieDetailInfoViewModel extends ViewModel {
         MovieDetailInfoItem movieDetailInfoItem = gson.fromJson(response, MovieDetailInfoItem.class);
 
         if (movieDetailInfoItem.getCode() == 200) {
-            detailInfoLiveData.setValue(movieDetailInfoItem);
-            galleryItemsLiveData.setValue(getMovieGalleryItems(movieDetailInfoItem));
-            saveMovieDetailInfoRoomDB(movieDetailInfoItem.getResult().get(0), context);
+            if (!movieDetailInfoItem.getResult().isEmpty()) {
+                detailInfoEntityLiveData.setValue(movieDetailInfoItem.getResult().get(0));
+                galleryItemsLiveData.setValue(getMovieGalleryItems(movieDetailInfoItem.getResult().get(0)));
+                saveMovieDetailInfoRoomDB(movieDetailInfoItem.getResult().get(0), context);
+            }
         }
     }
+
 
     private void saveMovieDetailInfoRoomDB(MovieDetailInfoEntity movieDetailInfoEntity, Context context) {
 
@@ -113,20 +116,21 @@ public class MovieDetailInfoViewModel extends ViewModel {
     }
 
     public void getMovieDetailInfoRoomDB(Context context, String title) {
-        MovieDetailInfoItem detailInfoItem = new MovieDetailInfoItem();
+
+        final MovieDetailInfoEntity[] loadedDetailInfoEntity = new MovieDetailInfoEntity[1];
+
         customAsyncTask.execute(new CustomAsyncTaskCallback() {
             @Override
             public void doInBackground() {
-                MovieDetailInfoEntity entity = AppDataBase.getAppDataBase(context).movieDetailInfoEntityDao().get(title);
-                if (entity != null) {
-                    detailInfoItem.getResult().add(entity);
-                }
+                loadedDetailInfoEntity[0] = AppDataBase.getAppDataBase(context).movieDetailInfoEntityDao().get(title);
             }
 
             @Override
             public void postExecute() {
-                detailInfoLiveData.setValue(detailInfoItem);
-                galleryItemsLiveData.setValue(getMovieGalleryItems(detailInfoItem));
+                if (loadedDetailInfoEntity[0] != null) {
+                    detailInfoEntityLiveData.setValue(loadedDetailInfoEntity[0]);
+                    galleryItemsLiveData.setValue(getMovieGalleryItems(loadedDetailInfoEntity[0]));
+                }
             }
         });
     }
@@ -181,26 +185,22 @@ public class MovieDetailInfoViewModel extends ViewModel {
         }
     }
 
-    private List<MovieGalleryItem> getMovieGalleryItems(MovieDetailInfoItem movieDetailInfoItem) {
+    private List<MovieGalleryItem> getMovieGalleryItems(MovieDetailInfoEntity detailInfoEntity) {
         List<MovieGalleryItem> galleryItems = new ArrayList<>();
 
-        if (!movieDetailInfoItem.getResult().isEmpty()) {
-            StringTokenizer st;
-
-            if (movieDetailInfoItem.getResult().get(0).getPhotos() != null) {
-                st = new StringTokenizer(movieDetailInfoItem.getResult().get(0).getPhotos(), ",");  //영화 이미지 url 넣기
-                while (st.hasMoreTokens()) {
-                    galleryItems.add(new MovieGalleryItem(st.nextToken(), 1));
-                }
+        StringTokenizer st;
+        if (detailInfoEntity.getPhotos() != null) {
+            st = new StringTokenizer(detailInfoEntity.getPhotos(), ",");  //영화 이미지 url 넣기
+            while (st.hasMoreTokens()) {
+                galleryItems.add(new MovieGalleryItem(st.nextToken(), 1));
             }
+        }
 
-            if (movieDetailInfoItem.getResult().get(0).getVideos() != null) {
-                st = new StringTokenizer(movieDetailInfoItem.getResult().get(0).getVideos(), ",");  //영화 동영상 url 넣기
-                while (st.hasMoreTokens()) {
-                    galleryItems.add(new MovieGalleryItem(st.nextToken(), 2));
-                }
+        if (detailInfoEntity.getVideos() != null) {
+            st = new StringTokenizer(detailInfoEntity.getVideos(), ",");  //영화 동영상 url 넣기
+            while (st.hasMoreTokens()) {
+                galleryItems.add(new MovieGalleryItem(st.nextToken(), 2));
             }
-
         }
 
         return galleryItems;

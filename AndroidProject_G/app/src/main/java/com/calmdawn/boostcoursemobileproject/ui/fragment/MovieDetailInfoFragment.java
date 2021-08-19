@@ -24,8 +24,8 @@ import com.calmdawn.boostcoursemobileproject.adapter.CommentRecyclerAdapter;
 import com.calmdawn.boostcoursemobileproject.adapter.MovieDetailInfoGalleryRecyclerAdapter;
 import com.calmdawn.boostcoursemobileproject.common.CustomToast;
 import com.calmdawn.boostcoursemobileproject.databinding.FragmentMovieDetailInfoBinding;
+import com.calmdawn.boostcoursemobileproject.db.entity.MovieDetailInfoEntity;
 import com.calmdawn.boostcoursemobileproject.model.MovieCommentListItem;
-import com.calmdawn.boostcoursemobileproject.model.MovieDetailInfoItem;
 import com.calmdawn.boostcoursemobileproject.model.MovieGalleryItem;
 import com.calmdawn.boostcoursemobileproject.network.NetworkState;
 import com.calmdawn.boostcoursemobileproject.ui.activity.MainActivity;
@@ -81,8 +81,10 @@ public class MovieDetailInfoFragment extends BaseFragment implements View.OnClic
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        detailInfoBinding = DataBindingUtil.inflate(getLayoutInflater(), R.layout.fragment_movie_detail_info, container, false);
-        detailInfoViewModel = new ViewModelProvider(this).get(MovieDetailInfoViewModel.class);
+        detailInfoBinding = DataBindingUtil.inflate(getLayoutInflater(), R.layout.fragment_movie_detail_info, container, false);    //데이터 바인딩 사용
+        detailInfoBinding.setLifecycleOwner(this);  //데이터 바인딩에서 라이브데이터 반영하기위해 설정
+        detailInfoViewModel = new ViewModelProvider(this).get(MovieDetailInfoViewModel.class);  //뷰모델 세팅
+        detailInfoBinding.setDetailViewModel(detailInfoViewModel);  //데이터바인딩 xml에 viewModel 세팅
         return detailInfoBinding.getRoot();
     }
 
@@ -90,59 +92,54 @@ public class MovieDetailInfoFragment extends BaseFragment implements View.OnClic
     public void onViewCreated(@NonNull View rootView, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(rootView, savedInstanceState);
 
+        //한줄평 목록 설정
         CommentRecyclerAdapter commentRecyclerAdapter = new CommentRecyclerAdapter(context);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         detailInfoBinding.fragmentMovieDetailInfoCommentsRecycler.setLayoutManager(linearLayoutManager);
         detailInfoBinding.fragmentMovieDetailInfoCommentsRecycler.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
         detailInfoBinding.fragmentMovieDetailInfoCommentsRecycler.setAdapter(commentRecyclerAdapter);
 
+        //갤러리 목록 설정
         MovieDetailInfoGalleryRecyclerAdapter galleryRecyclerAdapter = new MovieDetailInfoGalleryRecyclerAdapter(context);
         LinearLayoutManager galleryLinearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         detailInfoBinding.fragmentMovieDetailInfoGalleryRecycler.setLayoutManager(galleryLinearLayoutManager);
         detailInfoBinding.fragmentMovieDetailInfoGalleryRecycler.setAdapter(galleryRecyclerAdapter);
-
 
         detailInfoBinding.fragmentMovieDetailInfoThumbUpIv.setOnClickListener(thumbOnClickListener);
         detailInfoBinding.fragmentMovieDetailInfoThumbDownIv.setOnClickListener(thumbOnClickListener);
         detailInfoBinding.fragmentMovieDetailInfoWriteCommentsTv.setOnClickListener(this);
         detailInfoBinding.fragmentMovieDetailInfoViewAllCommentsCpbtn.setOnClickListener(this);
 
-        if (NetworkState.getConnectivityStatus(context)) {
-            Toast.makeText(context, "인터넷 연결됨", Toast.LENGTH_SHORT).show();
-            detailInfoViewModel.requestMovieDetailInfo(context, mParamMovieId);
-            detailInfoViewModel.requestMovieCommentList(context, mParamMovieId);
-        } else {
-            Toast.makeText(context, "인터넷 연결끊김 " + mParamMovieId, Toast.LENGTH_SHORT).show();
-            detailInfoViewModel.getMovieDetailInfoRoomDB(context, mParamMovieTitle);
-            detailInfoViewModel.getMovieCommentListRoomDB(context, mParamMovieId);
-        }
-
-        detailInfoViewModel.getDetailInfoLiveData().observe(getViewLifecycleOwner(), new Observer<MovieDetailInfoItem>() {
+        detailInfoViewModel.getDetailInfoEntityLiveData().observe(getViewLifecycleOwner(), new Observer<MovieDetailInfoEntity>() {
             @Override
-            public void onChanged(MovieDetailInfoItem movieDetailInfoItem) {
-                if (!movieDetailInfoItem.getResult().isEmpty()) {
-                    Glide.with(context).load(movieDetailInfoItem.getResult().get(0).getImage()).into(detailInfoBinding.fragmentMovieDetailInfoPosterIv);
-                    detailInfoBinding.fragmentMovieDetailInfoAgeIv.setImageResource(detailInfoViewModel.getGradeImg(movieDetailInfoItem.getResult().get(0).getGrade()));
-                    detailInfoBinding.fragmentMovieDetailInfoTitleTv.setText(movieDetailInfoItem.getResult().get(0).getTitle());
-                    detailInfoBinding.fragmentMovieDetailInfoDateTv.setText(movieDetailInfoItem.getResult().get(0).getDate() + " 개봉");
-                    detailInfoBinding.fragmentMovieDetailInfoCategoryTv.setText(movieDetailInfoItem.getResult().get(0).getGenre() + " / " + movieDetailInfoItem.getResult().get(0).getDuration() + "분");
-                    detailInfoBinding.fragmentMovieDetailInfoThumbUpTv.setText(String.valueOf(movieDetailInfoItem.getResult().get(0).getLike()));
-                    detailInfoBinding.fragmentMovieDetailInfoThumbDownTv.setText(String.valueOf(movieDetailInfoItem.getResult().get(0).getDislike()));
-                    detailInfoBinding.fragmentMovieDetailInfoReservationRateValueTv.setText(movieDetailInfoItem.getResult().get(0).getReservation_grade() + "위 " + movieDetailInfoItem.getResult().get(0).getReservation_rate());
-                    detailInfoBinding.fragmentMovieDetailInfoUserRatingbar.setRating(movieDetailInfoItem.getResult().get(0).getUser_rating());
-                    detailInfoBinding.fragmentMovieDetailInfoUserRateValueTv.setText(String.valueOf(movieDetailInfoItem.getResult().get(0).getUser_rating()));
-                    detailInfoBinding.fragmentMovieDetailInfoAudienceValueTv.setText(movieDetailInfoItem.getResult().get(0).getAudience() + "명");
+            public void onChanged(MovieDetailInfoEntity movieDetailInfoEntity) {
+                /**
+                 * 이미지 같은 경우 xml에서 데이터 연결하려면 어떤 방식으로 처리하나요?
+                 */
+                Glide.with(context).load(movieDetailInfoEntity.getImage()).into(detailInfoBinding.fragmentMovieDetailInfoPosterIv);
+                detailInfoBinding.fragmentMovieDetailInfoAgeIv.setImageResource(detailInfoViewModel.getGradeImg(movieDetailInfoEntity.getGrade()));
 
-                    detailInfoBinding.fragmentMovieDetailInfoSynopsisTv.setText(movieDetailInfoItem.getResult().get(0).getSynopsis());
-                    detailInfoBinding.fragmentMovieDetailInfoDirectorValueTv.setText(movieDetailInfoItem.getResult().get(0).getDirector());
-                    detailInfoBinding.fragmentMovieDetailInfoActorValueTv.setText(movieDetailInfoItem.getResult().get(0).getActor());
-
-                    Log.d(TAG, "onChanged: 불렸음");
-                }
+                /**
+                 기존에 observe를 통해 사용했지만 Xml 내부에 직접 데이터 연결했으므로 필요없어짐
+                 */
+//                    detailInfoBinding.fragmentMovieDetailInfoTitleTv.setText(movieDetailInfoEntity.getTitle());
+//                    detailInfoBinding.fragmentMovieDetailInfoDateTv.setText(movieDetailInfoEntity.getDate() + " 개봉");
+//                    detailInfoBinding.fragmentMovieDetailInfoCategoryTv.setText(movieDetailInfoEntity.getGenre() + " / " + movieDetailInfoEntity.getDuration() + "분");
+//                    detailInfoBinding.fragmentMovieDetailInfoThumbUpTv.setText(String.valueOf(movieDetailInfoEntity.getLike()));
+//                    detailInfoBinding.fragmentMovieDetailInfoThumbDownTv.setText(String.valueOf(movieDetailInfoEntity.getDislike()));
+//                    detailInfoBinding.fragmentMovieDetailInfoReservationRateValueTv.setText(movieDetailInfoEntity.getReservation_grade() + "위 " + movieDetailInfoEntity.getReservation_rate());
+//                    detailInfoBinding.fragmentMovieDetailInfoUserRatingbar.setRating(movieDetailInfoEntity.getUser_rating());
+//                    detailInfoBinding.fragmentMovieDetailInfoUserRateValueTv.setText(String.valueOf(movieDetailInfoEntity.getUser_rating()));
+//                    detailInfoBinding.fragmentMovieDetailInfoAudienceValueTv.setText(movieDetailInfoEntity.getAudience() + "명");
+//
+//                    detailInfoBinding.fragmentMovieDetailInfoSynopsisTv.setText(movieDetailInfoEntity.getSynopsis());
+//                    detailInfoBinding.fragmentMovieDetailInfoDirectorValueTv.setText(movieDetailInfoEntity.getDirector());
+//                    detailInfoBinding.fragmentMovieDetailInfoActorValueTv.setText(movieDetailInfoEntity.getActor());
             }
         });
 
-        detailInfoViewModel.getCommentListLiveData().observe(getViewLifecycleOwner(), new Observer<MovieCommentListItem>() {
+
+        detailInfoViewModel.getCommentListLiveData().observe(getViewLifecycleOwner(), new Observer<MovieCommentListItem>() {    //한줄평 목록 liveData
             @Override
             public void onChanged(MovieCommentListItem movieCommentListItem) {
                 commentRecyclerAdapter.setItem(movieCommentListItem);
@@ -150,7 +147,7 @@ public class MovieDetailInfoFragment extends BaseFragment implements View.OnClic
             }
         });
 
-        detailInfoViewModel.getGalleryItemsLiveData().observe(getViewLifecycleOwner(), new Observer<List<MovieGalleryItem>>() {
+        detailInfoViewModel.getGalleryItemsLiveData().observe(getViewLifecycleOwner(), new Observer<List<MovieGalleryItem>>() {    //갤러리 목록 liveData
             @Override
             public void onChanged(List<MovieGalleryItem> movieGalleryItems) {
                 galleryRecyclerAdapter.setItem(movieGalleryItems);
@@ -164,20 +161,31 @@ public class MovieDetailInfoFragment extends BaseFragment implements View.OnClic
     public void onResume() {
         super.onResume();
         ((MainActivity) context).getSupportActionBar().setTitle("영화 상세");
+
+        if (NetworkState.getConnectivityStatus(context)) {
+            Toast.makeText(context, "인터넷 연결됨", Toast.LENGTH_SHORT).show();
+            detailInfoViewModel.requestMovieDetailInfo(context, mParamMovieId);
+            detailInfoViewModel.requestMovieCommentList(context, mParamMovieId);
+        } else {
+            Toast.makeText(context, "인터넷 연결끊김 " + mParamMovieId, Toast.LENGTH_SHORT).show();
+            detailInfoViewModel.getMovieDetailInfoRoomDB(context, mParamMovieTitle);
+            detailInfoViewModel.getMovieCommentListRoomDB(context, mParamMovieId);
+        }
+
     }
 
     @Override
     public void onClick(View v) {
         if (v == detailInfoBinding.fragmentMovieDetailInfoWriteCommentsTv) {    //한줄평 작성하기
             Intent intent = new Intent(context, WriteCommentActivity.class);
-            intent.putExtra(getString(R.string.movie_name), detailInfoViewModel.getDetailInfoLiveData().getValue().getResult().get(0).getTitle());
+            intent.putExtra(getString(R.string.movie_name), mParamMovieTitle);
             intent.putExtra(getString(R.string.movie_id), mParamMovieId);
             startActivityForResult(intent, MOVIE_DETAIL_INFO_REQUEST);
             customToast.makeText("작성하기 버튼이 눌렸습니다", Toast.LENGTH_SHORT);
 
         } else if (v == detailInfoBinding.fragmentMovieDetailInfoViewAllCommentsCpbtn) {    //한줄평 모두보기
             Intent intent = new Intent(context, SeeAllCommentActivity.class);
-            intent.putExtra(getString(R.string.movie_name), detailInfoViewModel.getDetailInfoLiveData().getValue().getResult().get(0).getTitle());
+            intent.putExtra(getString(R.string.movie_name), mParamMovieTitle);
             intent.putExtra(getString(R.string.movie_id), mParamMovieId);
             startActivityForResult(intent, MOVIE_DETAIL_INFO_REQUEST);
             customToast.makeText("모두보기 버튼이 눌렸습니다", Toast.LENGTH_SHORT);
@@ -195,7 +203,7 @@ public class MovieDetailInfoFragment extends BaseFragment implements View.OnClic
         }
     }
 
-    private View.OnClickListener thumbOnClickListener = new View.OnClickListener() {
+    private View.OnClickListener thumbOnClickListener = new View.OnClickListener() {    //좋아요, 싫어요 버튼 클릭 리스너
         @Override
         public void onClick(View v) {
 
@@ -204,7 +212,7 @@ public class MovieDetailInfoFragment extends BaseFragment implements View.OnClic
 
 
             if (v == detailInfoBinding.fragmentMovieDetailInfoThumbUpIv) {
-                Log.d(TAG, "onClick: 업");
+                Log.d(TAG, "좋아요 버튼 클릭");
                 if (v.getTag() == null) {
                     ((ImageView) v).setImageResource(R.drawable.movie_detail_info_ic_thumb_up_selected);
                     v.setTag("selected");
@@ -224,7 +232,7 @@ public class MovieDetailInfoFragment extends BaseFragment implements View.OnClic
 
 
             } else {
-                Log.d(TAG, "onClick: 다운");
+                Log.d(TAG, "싫어요 버튼 클릭");
 
                 if (v.getTag() == null) {
                     ((ImageView) v).setImageResource(R.drawable.movie_detail_info_ic_thumb_down_selected);

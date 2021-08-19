@@ -5,6 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.fragment.MovieDetailInfoFragment">
 
+    <data>
+
+        <variable
+            name="detailViewModel"
+            type="com.calmdawn.boostcoursemobileproject.viewmodel.MovieDetailInfoViewModel" />
+    </data>
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -37,7 +44,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_large_24dp"
                     android:layout_marginTop="@dimen/margin_medium_16dp"
-                    android:text="@string/movie_detail_info_title"
+                    android:text="@{detailViewModel.detailInfoEntityLiveData.title ?? @string/movie_detail_info_title}"
                     android:textColor="@color/white"
                     android:textSize="@dimen/textsize_sub_title_20dp"
                     android:textStyle="bold"
@@ -60,7 +67,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_large_24dp"
-                    android:text="@string/movie_detail_info_date"
+                    android:text="@{detailViewModel.detailInfoEntityLiveData.date ?? @string/movie_detail_info_date}"
                     android:textColor="@color/white"
                     android:textSize="@dimen/textsize_large_16dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -72,7 +79,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small_8dp"
-                    android:text="@string/movie_detail_info_category"
+                    android:text="@{(detailViewModel.detailInfoEntityLiveData.genre ?? `장르`) + ` / `+ (detailViewModel.detailInfoEntityLiveData.duration ?? 0) +`분`}"
                     android:textColor="@color/white"
                     android:textSize="@dimen/margin_medium_16dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -93,7 +100,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_small_8dp"
-                    android:text="0"
+                    android:text="@{String.valueOf(detailViewModel.detailInfoEntityLiveData.like  ?? `0`)}"
                     android:textColor="@color/white"
                     android:textSize="@dimen/textsize_sub_title_20dp"
                     android:textStyle="bold"
@@ -116,7 +123,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_small_8dp"
-                    android:text="0"
+                    android:text="@{String.valueOf(detailViewModel.detailInfoEntityLiveData.dislike  ?? `0`)}"
                     android:textColor="@color/white"
                     android:textSize="@dimen/textsize_sub_title_20dp"
                     android:textStyle="bold"
@@ -171,7 +178,7 @@
                     android:layout_marginTop="@dimen/margin_small_8dp"
                     android:layout_marginBottom="@dimen/margin_medium_16dp"
                     android:gravity="center"
-                    android:text="@string/movie_detail_info_reservation_value"
+                    android:text="@{(detailViewModel.detailInfoEntityLiveData.grade ?? 1) + `위 `+ (detailViewModel.detailInfoEntityLiveData.reservation_rate ?? `0.0`) + `%`}"
                     android:textSize="@dimen/textsize_large_16dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/fragment_movie_detail_info_divide_line_v1"
@@ -200,6 +207,7 @@
                     android:max="10"
                     android:numStars="5"
                     android:progressTint="#FF2DA1"
+                    android:rating="@{detailViewModel.detailInfoEntityLiveData.user_rating != 0 ? detailViewModel.detailInfoEntityLiveData.user_rating : 0}"
                     android:stepSize="0.5"
                     app:layout_constraintBottom_toBottomOf="@+id/fragment_movie_detail_info_user_rate_value_tv"
                     app:layout_constraintEnd_toStartOf="@id/fragment_movie_detail_info_user_rate_value_tv"
@@ -213,7 +221,7 @@
                     android:layout_marginTop="@dimen/margin_small_8dp"
                     android:layout_marginBottom="@dimen/margin_medium_16dp"
                     android:gravity="center"
-                    android:text="@string/movie_detail_info_user_rate_value"
+                    android:text="@{String.valueOf(detailViewModel.detailInfoEntityLiveData.user_rating != 0 ? detailViewModel.detailInfoEntityLiveData.user_rating : 0)}"
                     android:textSize="@dimen/textsize_large_16dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/fragment_movie_detail_info_divide_line_v2"
@@ -242,7 +250,7 @@
                     android:layout_marginTop="@dimen/margin_small_8dp"
                     android:layout_marginBottom="@dimen/margin_medium_16dp"
                     android:gravity="center"
-                    android:text="@string/movie_detail_info_audience_value"
+                    android:text="@{(detailViewModel.detailInfoEntityLiveData.audience ?? 0) + `명`}"
                     android:textSize="@dimen/textsize_large_16dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -275,6 +283,7 @@
                     android:layout_marginTop="10dp"
                     android:hint="@string/movie_detail_info_synopsis_value"
                     android:lineSpacingExtra="2dp"
+                    android:text="@{detailViewModel.detailInfoEntityLiveData.synopsis ?? @string/movie_detail_info_synopsis_value}"
                     android:textSize="@dimen/textsize_large_16dp" />
 
             </LinearLayout>
@@ -315,7 +324,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_medium_16dp"
-                    android:text="@string/movie_detail_info_director_value"
+                    android:text="@{detailViewModel.detailInfoEntityLiveData.director ?? @string/movie_detail_info_director_value}"
                     android:textSize="@dimen/textsize_large_16dp"
                     app:layout_constraintStart_toEndOf="@+id/fragment_movie_detail_info_director_title_tv"
                     app:layout_constraintTop_toTopOf="@+id/fragment_movie_detail_info_director_title_tv" />
@@ -338,7 +347,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_medium_16dp"
-                    android:text="@string/movie_detail_info_actor_value"
+                    android:text="@{detailViewModel.detailInfoEntityLiveData.actor ?? @string/movie_detail_info_actor_value}"
                     android:textSize="@dimen/textsize_large_16dp"
                     app:layout_constraintStart_toEndOf="@+id/fragment_movie_detail_info_actor_title_tv"
                     app:layout_constraintTop_toTopOf="@+id/fragment_movie_detail_info_actor_title_tv" />
@@ -395,10 +404,10 @@
                     android:id="@+id/fragment_movie_detail_info_write_comments_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/common_ic_review_selected"
                     android:text="@string/movie_detail_info_write_comment"
                     android:textColor="@color/orange_FF4800"
                     android:textSize="@dimen/textsize_sub_title_20dp"
+                    app:drawableStartCompat="@drawable/common_ic_review_selected"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

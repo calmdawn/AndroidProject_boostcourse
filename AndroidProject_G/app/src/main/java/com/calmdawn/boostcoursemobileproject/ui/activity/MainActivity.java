@@ -42,7 +42,7 @@ public class MainActivity extends BaseActivity {
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-//        NavigationUI.setupWithNavController(navigationView, navController);
+        NavigationUI.setupWithNavController(navigationView, navController);
 
         fragmentManager.beginTransaction().replace(R.id.nav_host_fragment, moviePosterListContainerFragment).commitAllowingStateLoss();
 
@@ -51,7 +51,7 @@ public class MainActivity extends BaseActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.nav_movie_list:
-                        fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);    // 영화상세보기 뒤로가기 이후 영화목록 중복호출 충돌방지
+                        fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);    // 영화상세보기 뒤로가기 이후 영화목록 중복호출로 인한 충돌방지
                         fragmentManager.beginTransaction().replace(R.id.nav_host_fragment, moviePosterListContainerFragment).commitAllowingStateLoss();
                         break;
                 }

@@ -8,7 +8,9 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.calmdawn.boostcoursemobileproject.model.MoviePosterListItem;
 import com.calmdawn.boostcoursemobileproject.ui.fragment.MoviePosterFragment;
-
+/**
+ * 영화 포스터 목록 어댑터
+ */
 public class MoviePosterListContainerViewPagerAdapter extends FragmentStateAdapter {
 
     MoviePosterListItem item = new MoviePosterListItem();

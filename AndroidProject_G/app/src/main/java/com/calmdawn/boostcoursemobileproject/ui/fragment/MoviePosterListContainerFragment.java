@@ -53,8 +53,8 @@ public class MoviePosterListContainerFragment extends BaseFragment {
 
         MoviePosterListContainerViewPagerAdapter adapter = new MoviePosterListContainerViewPagerAdapter(getChildFragmentManager(), getLifecycle());
         binding.fragmentMoviePosterListContainerViewpager.setAdapter(adapter);
-        binding.fragmentMoviePosterListContainerViewpager.setOffscreenPageLimit(3);
-        binding.fragmentMoviePosterListContainerViewpager.setPageTransformer(new ViewPager2.PageTransformer() {
+        binding.fragmentMoviePosterListContainerViewpager.setOffscreenPageLimit(3); //포스터 미리보기 사용을 위해 3개 먼저 불러오기
+        binding.fragmentMoviePosterListContainerViewpager.setPageTransformer(new ViewPager2.PageTransformer() { //viewpager2 사용 + 영화포스터 크기 10% 만큼 미리보기
             @Override
             public void transformPage(@NonNull View page, float position) {
                 page.setTranslationX(-getPosterPreviewWidth() * position);
@@ -62,7 +62,7 @@ public class MoviePosterListContainerFragment extends BaseFragment {
         });
 
 
-        moviePosterListContainerViewModel.getMoviePosterListLiveData().observe(getViewLifecycleOwner(), new Observer<MoviePosterListItem>() {
+        moviePosterListContainerViewModel.getMoviePosterListLiveData().observe(getViewLifecycleOwner(), new Observer<MoviePosterListItem>() {   //영화 포스터 목록 세팅
             @Override
             public void onChanged(MoviePosterListItem moviePosterList) {
                 adapter.setItem(moviePosterList);
@@ -71,10 +71,10 @@ public class MoviePosterListContainerFragment extends BaseFragment {
         });
 
 
-        if (NetworkState.getConnectivityStatus(context)) {
+        if (NetworkState.getConnectivityStatus(context)) {  //서버에서 데이터 가져옴
             Toast.makeText(context, "인터넷 연결됨", Toast.LENGTH_SHORT).show();
             moviePosterListContainerViewModel.requestMovieList(context);
-        } else {
+        } else {    //로컬DB에서 데이터 가져옴
             Toast.makeText(context, "인터넷 연결끊김", Toast.LENGTH_SHORT).show();
             moviePosterListContainerViewModel.getMovieListRoomDB(context);
         }

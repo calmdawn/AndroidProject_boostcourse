@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -45,13 +46,12 @@ public class MoviePhotoActivity extends BaseActivity implements View.OnClickList
 
     }
 
-    private class ScaleGestureListener extends ScaleGestureDetector.SimpleOnScaleGestureListener{
+    private class ScaleGestureListener extends ScaleGestureDetector.SimpleOnScaleGestureListener{   //사진 두손가락 터치이벤트로 축소, 확대 구현
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
             scaleFactor = scaleFactor * detector.getScaleFactor();
-            scaleFactor = Math.max(1.0f, Math.min(scaleFactor, 10.0f));
-
-            photoBinding.activityMoviePhotoIv.setScaleX(scaleFactor);
+            scaleFactor = Math.max(1.0f, Math.min(scaleFactor, 10.0f)); //최소 1배, 최대 10배까지 핀치줌
+                        photoBinding.activityMoviePhotoIv.setScaleX(scaleFactor);
             photoBinding.activityMoviePhotoIv.setScaleY(scaleFactor);
             return true;
         }

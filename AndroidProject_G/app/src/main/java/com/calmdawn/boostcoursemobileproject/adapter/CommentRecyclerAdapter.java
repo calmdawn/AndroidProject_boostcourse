@@ -13,6 +13,9 @@ import com.calmdawn.boostcoursemobileproject.R;
 import com.calmdawn.boostcoursemobileproject.databinding.CommonLayoutItemCommentBinding;
 import com.calmdawn.boostcoursemobileproject.model.MovieCommentListItem;
 
+/**
+ * 한줄펑 리스트 리사이클러뷰 어댑터
+ */
 public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecyclerAdapter.ViewHolder> {
 
     Context context;
