@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.activity.SeeAllCommentActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/gray_EAEAEA"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:padding="@dimen/padding_small_8dp">
+
+            <TextView
+                android:id="@+id/activity_see_all_comment_movie_name_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/padding_medium_16dp"
+                android:text="영화제목"
+                android:textColor="@color/black"
+                android:textSize="@dimen/textsize_title_24dp"
+                app:drawableEndCompat="@drawable/common_ic_grade_12" />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:background="@color/white"
+            android:gravity="center_vertical|end"
+            android:orientation="horizontal"
+            android:padding="@dimen/padding_small_8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_see_all_comment_movie_name_tv">
+
+            <androidx.appcompat.widget.AppCompatRatingBar
+                android:id="@+id/activity_see_all_comment_user_ratingbar"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_small_8dp"
+                android:numStars="5"
+                android:progressTint="#FF2DA1"
+                android:stepSize="0.5" />
+
+            <TextView
+                android:id="@+id/activity_see_all_comment_user_rating_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_small_8dp"
+                android:text="0.0" />
+
+            <TextView
+                android:id="@+id/activity_see_all_comment_total_count_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(0명 참여)" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_medium_16dp"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/padding_small_8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="한줄평"
+                android:textColor="@color/black"
+                android:textSize="@dimen/textsize_sub_title_20dp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/activity_see_all_comment_write_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:src="@drawable/common_ic_review_selected" />
+
+
+            <TextView
+                android:id="@+id/activity_see_all_comment_write_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_small_8dp"
+                android:drawablePadding="@dimen/padding_small_8dp"
+                android:gravity="center_vertical"
+                android:text="작성하기"
+                android:textColor="@color/orange_FF4800"
+                android:textSize="@dimen/textsize_sub_title_20dp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/activity_see_all_comment_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:padding="@dimen/padding_small_8dp" />
+    </LinearLayout>
+</layout>

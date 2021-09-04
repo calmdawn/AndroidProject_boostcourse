@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+
+    <ImageButton
+        android:id="@+id/common_layout_custom_action_bar_back_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:src="@drawable/common_ic_back_white" />
+
+    <TextView
+        android:id="@+id/common_layout_custom_action_bar_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_medium_16dp"
+        android:text="@string/movie_detail_info_actor_title"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textsize_sub_title_20dp" />
+
+</LinearLayout>

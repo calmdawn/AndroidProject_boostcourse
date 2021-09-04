@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.activity.WriteCommentActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+
+        <TextView
+            android:id="@+id/activity_write_comment_title_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_small_8dp"
+            android:drawablePadding="@dimen/padding_small_8dp"
+            android:padding="@dimen/padding_small_8dp"
+            android:text="군도"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textsize_title_24dp"
+            app:drawableEndCompat="@drawable/common_ic_grade_15"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:background="@color/gray_EAEAEA"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_write_comment_title_tv" />
+
+        <androidx.appcompat.widget.AppCompatRatingBar
+            android:id="@+id/activity_write_comment_ratingbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small_8dp"
+            android:numStars="5"
+            android:stepSize="0.5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view" />
+
+        <TextView
+            android:id="@+id/activity_write_comment_rating_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/padding_small_8dp"
+            android:text="평점을 입력해주세요"
+            android:textSize="@dimen/textsize_sub_title_20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_write_comment_ratingbar" />
+
+        <EditText
+            android:id="@+id/activity_write_comment_edittv"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/margin_medium_16dp"
+            android:layout_marginEnd="@dimen/margin_medium_16dp"
+            android:background="@drawable/write_comment_layout_background_rectangle_stroke_orange"
+            android:gravity="start"
+            android:inputType="textMultiLine"
+            android:hint="100자 이내로 작성해주세요."
+            android:padding="@dimen/padding_small_8dp"
+            android:textSize="@dimen/textsize_large_16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.25"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_write_comment_rating_tv" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/activity_write_comment_cancel_cpbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_medium_16dp"
+            android:layout_marginEnd="@dimen/margin_medium_16dp"
+            android:background="@drawable/common_layout_background_rectangle_stroke_purple"
+            android:text="취 소"
+            android:textSize="@dimen/textsize_sub_title_20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_write_comment_edittv" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/activity_write_comment_save_cpbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_small_8dp"
+            android:background="@drawable/common_layout_background_rectangle_stroke_purple"
+            android:text="저 장"
+            android:textSize="@dimen/textsize_sub_title_20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/activity_write_comment_cancel_cpbtn"
+            app:layout_constraintEnd_toStartOf="@+id/activity_write_comment_cancel_cpbtn"
+            app:layout_constraintTop_toTopOf="@+id/activity_write_comment_cancel_cpbtn" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
